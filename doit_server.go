@@ -18,8 +18,14 @@ func (ds *DoitServer) CloseDatastore() error {
 }
 
 //Host handlers
-func (ds *DoitServer) AddHost() {
+func (ds *DoitServer) Add(name string) {
+	h := &Host{Name: name}
+	ds.Store.Conn.NewRecord(h) // => returns `true` if primary key is blank
+	ds.Store.Conn.Create(&h)
 
+}
+
+func (ds *DoitServer) AddHost(name string) {
 }
 
 func (ds *DoitServer) UpdateHost() {

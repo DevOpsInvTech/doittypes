@@ -40,6 +40,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	case "host":
 		switch r.Method {
 		case "GET":
+		//Check for list
 		case "PUT":
 		case "POST":
 		case "DELETE":
