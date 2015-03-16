@@ -1,0 +1,6 @@
+server:
+	- enable: true
+	- port: 8080
+storage:
+	- type: "sqlite"
+	- location: "db/database.db"

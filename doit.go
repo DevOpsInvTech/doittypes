@@ -11,11 +11,12 @@ import (
 
 func main() {
 	port := flag.String("p", "8080", "Port")
+	config := flag.String("c", "", "Load config file")
 	serverMode := flag.Bool("s", false, "Enable server mode")
 
 	flag.Parse()
 
-	log.Println(port, serverMode)
+	log.Println(port, serverMode, config)
 
 	if *serverMode {
 		r := mux.NewRouter()
