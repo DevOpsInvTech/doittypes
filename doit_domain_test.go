@@ -22,4 +22,5 @@ func TestDomainDBBasic(t *testing.T) {
 	testDomain := &Domain{Name: "Potato"}
 	db.NewRecord(testDomain)
 	db.Create(&testDomain)
+	db.Close()
 }

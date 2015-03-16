@@ -25,4 +25,5 @@ func TestGroupDBBasic(t *testing.T) {
 	testGroup := &Group{Name: "Potato"}
 	db.NewRecord(testGroup)
 	db.Create(&testGroup)
+	db.Close()
 }

@@ -22,6 +22,7 @@ func TestHostDBBasic(t *testing.T) {
 	testHost := &Host{Name: "Potato"}
 	db.NewRecord(testHost)
 	db.Create(&testHost)
+	db.Close()
 }
 
 func TestHostVarDBBasic(t *testing.T) {
@@ -43,4 +44,5 @@ func TestHostVarDBBasic(t *testing.T) {
 	testHost := &Host{Name: "Potato", Vars: []Var{*testVar}}
 	db.NewRecord(testHost)
 	db.Create(&testHost)
+	db.Close()
 }

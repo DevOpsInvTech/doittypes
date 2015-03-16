@@ -22,4 +22,5 @@ func TestVarDBBasic(t *testing.T) {
 	testVar := &Var{Name: "Potato", Value: "Spud"}
 	db.NewRecord(testVar)
 	db.Create(&testVar)
+	db.Close()
 }

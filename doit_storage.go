@@ -5,7 +5,7 @@ import "github.com/jinzhu/gorm"
 type DoitStorage struct {
 	Type     string
 	Location string
-	DB       gorm.DB
+	Conn     gorm.DB
 }
 
 func NewStorage(t string, loc string) (*DoitStorage, error) {
@@ -14,10 +14,25 @@ func NewStorage(t string, loc string) (*DoitStorage, error) {
 		return nil, err
 	}
 
-	return &DoitStorage{DB: db, Type: t, Location: loc}, nil
+	s := &DoitStorage{Conn: db, Type: t, Location: loc}
+	s.Conn.DB()
+	db.DB().Ping()
+	return s, nil
+}
+
+func (s *DoitStorage) InitSchema(overwrite bool) {
+	if overwrite {
+		s.Conn.CreateTable(&Host{})
+		s.Conn.CreateTable(&Var{})
+		s.Conn.CreateTable(&Domain{})
+		s.Conn.CreateTable(&Group{})
+	} else {
+		//test schema
+	}
+
 }
 
 func (s *DoitStorage) Close() error {
-	err := s.DB.Close()
+	err := s.Conn.Close()
 	return err
 }

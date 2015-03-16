@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
+	dc := &DoitConfig{}
+
 	port := flag.String("p", "8080", "Port")
 	config := flag.String("c", "", "Load config file")
 	serverMode := flag.Bool("s", false, "Enable server mode")
@@ -17,6 +19,18 @@ func main() {
 	flag.Parse()
 
 	log.Println(port, serverMode, config)
+
+	if *config != "" {
+		//load config
+		//overwrites
+		err := dc.Read(*config)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		//manual load config
+
+	}
 
 	if *serverMode {
 		r := mux.NewRouter()
