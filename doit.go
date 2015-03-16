@@ -9,12 +9,12 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/domains", homeHandler)
-	r.HandleFunc("/hosts", homeHandler)
-	r.HandleFunc("/groups", homeHandler)
-	r.HandleFunc("/group_vars", homeHandler)
-	r.HandleFunc("/group_vars/{group}/list", homeHandler)
-	r.HandleFunc("/api/1/{type}/{name}/{action}", homeHandler).Methods("POST", "DELETE", "PUT", "GET")
+	r.HandleFunc("/domains", domainHandler)
+	r.HandleFunc("/hosts", hostHandler)
+	r.HandleFunc("/groups", groupHandler)
+	r.HandleFunc("/group_vars", varsHandler)
+	r.HandleFunc("/group_vars/{group}/list", varsHandler)
+	r.HandleFunc("/api/1/{type}/{name}", apiHandler).Methods("POST", "DELETE", "PUT", "GET")
 
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", nil)
