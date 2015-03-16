@@ -1,21 +1,37 @@
 package main
 
 import (
+	"flag"
+	"log"
+	"net"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/", homeHandler)
-	r.HandleFunc("/domains", domainHandler)
-	r.HandleFunc("/hosts", hostHandler)
-	r.HandleFunc("/groups", groupHandler)
-	r.HandleFunc("/group_vars", varsHandler)
-	r.HandleFunc("/group_vars/{group}/list", varsHandler)
-	r.HandleFunc("/api/1/{type}/{name}", apiHandler).Methods("POST", "DELETE", "PUT", "GET")
+	port := flag.String("p", "8080", "Port")
+	serverMode := flag.Bool("s", false, "Enable server mode")
 
-	http.Handle("/", r)
-	http.ListenAndServe(":8080", nil)
+	flag.Parse()
+
+	log.Println(port, serverMode)
+
+	if *serverMode {
+		r := mux.NewRouter()
+		r.HandleFunc("/", homeHandler)
+		r.HandleFunc("/domains", domainHandler)
+		r.HandleFunc("/hosts", hostHandler)
+		r.HandleFunc("/groups", groupHandler)
+		r.HandleFunc("/group_vars", varsHandler)
+		r.HandleFunc("/group_vars/{group}/list", varsHandler)
+		r.HandleFunc("/api/1/{type}/{name}", apiHandler).Methods("POST", "DELETE", "PUT", "GET")
+
+		http.Handle("/", r)
+		if err := http.ListenAndServe(net.JoinHostPort("", *port), nil); err != nil {
+			log.Println(err)
+		}
+	} else {
+		//Act as client
+	}
 }
