@@ -8,5 +8,4 @@ type Var struct {
 	Value     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
 }

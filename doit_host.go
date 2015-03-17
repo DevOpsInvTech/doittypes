@@ -5,10 +5,9 @@ import "time"
 type Host struct {
 	ID        int `sql:"not null;unique;AUTO_INCREMENT"`
 	Name      string
-	Vars      []Var
+	Vars      []Var `gorm:"many2many:host_vars;"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt time.Time
 }
 
 func (h *Host) AddVar(v Var) {
