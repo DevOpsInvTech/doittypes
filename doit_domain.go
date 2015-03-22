@@ -11,3 +11,15 @@ type Domain struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (d *Domain) AddVar(v Var) {
+	d.Vars = append(d.Vars, v)
+}
+
+func (d *Domain) AddHost(h Host) {
+	d.Hosts = append(d.Hosts, h)
+}
+
+func (d *Domain) AddGroup(g Group) {
+	d.Groups = append(d.Groups, g)
+}

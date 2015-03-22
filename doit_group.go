@@ -7,7 +7,7 @@ type Group struct {
 	Name      string
 	Hosts     []Host   `gorm:"many2many:group_hosts;"`
 	Vars      []Var    `gorm:"many2many:group_vars;"`
-	Domain    []Domain `gorm:"many2many:group_domains;"`
+	Domains   []Domain `gorm:"many2many:group_domains;"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -18,6 +18,10 @@ func (g *Group) AddVar(v Var) {
 
 func (g *Group) AddHost(h Host) {
 	g.Hosts = append(g.Hosts, h)
+}
+
+func (g *Group) AddDomain(d Domain) {
+	g.Domains = append(g.Domains, d)
 }
 
 type GroupMatrix struct {

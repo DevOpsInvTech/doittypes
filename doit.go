@@ -22,7 +22,6 @@ func main() {
 
 	if *config != "" {
 		//load config
-		//overwrites
 		err := dc.Read(*config)
 		if err != nil {
 			panic(err)
@@ -41,12 +40,13 @@ func main() {
 		r.HandleFunc("/group_vars", varsHandler)
 		r.HandleFunc("/group_vars/{group}/list", varsHandler)
 		r.HandleFunc("/api/1/{type}/{name}", apiHandler).Methods("POST", "DELETE", "PUT", "GET")
+		r.HandleFunc("/api/ansible", ansibleHandler).Methods("GET")
 
 		http.Handle("/", r)
 		if err := http.ListenAndServe(net.JoinHostPort("", *port), nil); err != nil {
 			log.Println(err)
 		}
 	} else {
-		//Act as client
+		//TODO: Act as a CLI client
 	}
 }

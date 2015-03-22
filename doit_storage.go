@@ -23,11 +23,13 @@ func NewStorage(t string, loc string) (*DoitStorage, error) {
 func (s *DoitStorage) InitSchema(overwrite bool) {
 	if overwrite {
 		s.Conn.CreateTable(&Host{})
+		s.Conn.CreateTable(&HostVar{})
 		s.Conn.CreateTable(&Var{})
 		s.Conn.CreateTable(&Domain{})
 		s.Conn.CreateTable(&Group{})
 		s.Conn.CreateTable(&GroupMatrix{})
 	} else {
+		//TODO: Test schema
 		//test schema
 	}
 
