@@ -10,11 +10,11 @@ func TestDoitActionAddHost(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	checkHost, err := ds.GetHost(newHost.ID)
+	_, err = ds.GetHost(newHost.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(checkHost)
+	t.Log("Host successfully created")
 	ds.CloseDatastore()
 }
 

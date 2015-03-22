@@ -1,40 +1,46 @@
 package main
 
-import "errors"
-
-//Var handlers
-func (ds *DoitServer) AddVar(name string, value string) {
-	v := &Var{Name: name, Value: value}
+//AddVar Add new var to datastore
+func (ds *DoitServer) AddVar(name string, value string) (v *Var, err error) {
+	v = &Var{Name: name, Value: value}
 	ds.Store.Conn.NewRecord(v)
-	ds.Store.Conn.Create(&v)
+	gormErr := ds.Store.Conn.Create(&v)
+	return v, gormErr.Error
 }
 
+//UpdateVar Update Var
 func (ds *DoitServer) UpdateVar(id int, value string) error {
-	v := &Var{ID: id}
-	ds.Store.Conn.First(&v)
-	if v.Name != "" {
-		v.Value = value
-		ds.Store.Conn.Save(&v)
-		return nil
+	v, err := ds.GetVar(id)
+	if err != nil {
+		return err
 	}
-	return errors.New("Var ID not found")
+	v.Value = value
+	gormErr := ds.Store.Conn.Save(&v)
+	if gormErr.Error != nil {
+		return gormErr.Error
+	}
+	return nil
 }
 
+//RemoveVar Remove Var
 func (ds *DoitServer) RemoveVar(id int) error {
-	v := &Var{ID: id}
-	ds.Store.Conn.First(&v)
-	if v.Name != "" {
-		ds.Store.Conn.Delete(&v)
-		return nil
+	v, err := ds.GetVar(id)
+	if err != nil {
+		return err
 	}
-	return errors.New("Var ID not found")
+	gormErr := ds.Store.Conn.Delete(&v)
+	if gormErr.Error != nil {
+		return gormErr.Error
+	}
+	return nil
 }
 
+//GetVar Get Var from datastore
 func (ds *DoitServer) GetVar(id int) (*Var, error) {
 	v := &Var{ID: id}
-	ds.Store.Conn.First(&v)
-	if v.Name != "" {
-		return v, nil
+	gormErr := ds.Store.Conn.First(&v)
+	if gormErr.Error != nil {
+		return v, gormErr.Error
 	}
-	return nil, errors.New("Var ID not found")
+	return v, nil
 }
