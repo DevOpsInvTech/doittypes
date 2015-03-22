@@ -19,11 +19,8 @@ func (ds *DoitServer) AddHostVars(id int, vars ...HostVar) error {
 	if err != nil {
 		return err
 	}
-	if h.Name != "" {
-		gormErr := ds.Store.Conn.Model(&h).Association("Vars").Append(vars)
-		return gormErr.Error
-	}
-	return errors.New("Host ID not found")
+	gormErr := ds.Store.Conn.Model(&h).Association("Vars").Append(vars)
+	return gormErr.Error
 }
 
 //RemoveHostVars Remove Vars from Host
