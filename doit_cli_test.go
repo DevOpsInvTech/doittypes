@@ -1,12 +1,17 @@
 package main
 
 import (
-	"log"
+	"os"
 	"testing"
 )
 
 func TestBasicCommandLineParse(t *testing.T) {
+	os.Args[1] = "-h"
 	cli := &CommandLine{}
-	log.Println(cli)
-	//	cli.Usage()
+	err := cli.Usage()
+	if err != nil {
+		t.Log("ERR")
+		t.Fatal(err)
+	}
+	t.Log("Fin")
 }
