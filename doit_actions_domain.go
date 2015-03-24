@@ -83,24 +83,7 @@ func (ds *DoitServer) RemoveDomain(id int) error {
 	if err != nil {
 		return err
 	}
-	if len(d.Vars) > 0 {
-		gormErr := ds.Store.Conn.Model(&d).Association("Vars").Delete(&d.Vars)
-		if gormErr.Error != nil {
-			return gormErr.Error
-		}
-	}
-	if len(d.Groups) > 0 {
-		gormErr := ds.Store.Conn.Model(&d).Association("Groups").Delete(&d.Groups)
-		if gormErr.Error != nil {
-			return gormErr.Error
-		}
-	}
-	if len(d.Hosts) > 0 {
-		gormErr := ds.Store.Conn.Model(&d).Association("Hosts").Delete(&d.Hosts)
-		if gormErr.Error != nil {
-			return gormErr.Error
-		}
-	}
+	//TODO: Remove all associated objects?
 	hostErr := ds.Store.Conn.Delete(&d)
 	if hostErr.Error != nil {
 		return hostErr.Error
@@ -111,7 +94,7 @@ func (ds *DoitServer) RemoveDomain(id int) error {
 //GetDomain Get Var from datastore
 func (ds *DoitServer) GetDomain(id int) (*Domain, error) {
 	d := &Domain{ID: id}
-	gormErr := ds.Store.Conn.First(&d).Related(&d.Vars, "Vars").Related(&d.Hosts, "Hosts").Related(&d.Groups, "Groups")
+	gormErr := ds.Store.Conn.First(&d)
 	if gormErr.Error != nil {
 		return d, gormErr.Error
 	}

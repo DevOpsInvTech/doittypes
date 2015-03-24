@@ -89,12 +89,6 @@ func (ds *DoitServer) RemoveGroup(id int) error {
 			return gormErr.Error
 		}
 	}
-	if len(g.Domains) > 0 {
-		gormErr := ds.Store.Conn.Model(&g).Association("Domains").Delete(&g.Domains)
-		if gormErr.Error != nil {
-			return gormErr.Error
-		}
-	}
 	if len(g.Hosts) > 0 {
 		gormErr := ds.Store.Conn.Model(&g).Association("Hosts").Delete(&g.Hosts)
 		if gormErr.Error != nil {
@@ -111,7 +105,7 @@ func (ds *DoitServer) RemoveGroup(id int) error {
 //GetGroup Get Var from datastore
 func (ds *DoitServer) GetGroup(id int) (*Group, error) {
 	g := &Group{ID: id}
-	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts").Related(&g.Domains, "Domains")
+	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
 	if gormErr.Error != nil {
 		return g, gormErr.Error
 	}
