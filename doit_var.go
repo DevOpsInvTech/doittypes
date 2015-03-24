@@ -7,7 +7,7 @@ import (
 
 type Var struct {
 	ID        int `sql:"not null;unique;AUTO_INCREMENT"`
-	Domain    Domain
+	Domain    *Domain
 	DomainID  sql.NullInt64
 	Name      string `sql:"unique"`
 	Value     string

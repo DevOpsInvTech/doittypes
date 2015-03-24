@@ -6,11 +6,15 @@ func TestDoitActionAddGroup(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddGroup.db")
 	ds.Store.InitSchema(true)
-	g, err := ds.AddGroup("Group1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetGroup(g.ID)
+	g, err := ds.AddGroup(domain, "Group1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetGroup(domain, g.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,14 +26,18 @@ func TestDoitActionAddGroupVar(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddGroupVar.db")
 	ds.Store.InitSchema(true)
-	g, err := ds.AddGroup("Group1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddGroupVars(g.ID, Var{Name: "Var1", Value: "Val1"}); err != nil {
+	g, err := ds.AddGroup(domain, "Group1")
+	if err != nil {
 		t.Fatal(err)
 	}
-	cg, err := ds.GetGroup(g.ID)
+	if err := ds.AddGroupVars(domain, g.ID, Var{Name: "Var1", Value: "Val1", Domain: domain}); err != nil {
+		t.Fatal(err)
+	}
+	cg, err := ds.GetGroup(domain, g.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,14 +53,18 @@ func TestDoitActionAddGroupVars(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddGroupVars.db")
 	ds.Store.InitSchema(true)
-	g, err := ds.AddGroup("Group1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddGroupVars(g.ID, []Var{Var{Name: "Var1", Value: "Val1"}, Var{Name: "Var2", Value: "Val2"}}...); err != nil {
+	g, err := ds.AddGroup(domain, "Group1")
+	if err != nil {
 		t.Fatal(err)
 	}
-	cg, err := ds.GetGroup(g.ID)
+	if err := ds.AddGroupVars(domain, g.ID, []Var{Var{Name: "Var1", Value: "Val1", Domain: domain}, Var{Name: "Var2", Value: "Val2", Domain: domain}}...); err != nil {
+		t.Fatal(err)
+	}
+	cg, err := ds.GetGroup(domain, g.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,14 +81,18 @@ func TestDoitActionAddGroupHost(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddGroupHost.db")
 	ds.Store.InitSchema(true)
-	g, err := ds.AddGroup("Group1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddGroupHosts(g.ID, Host{Name: "Host11"}); err != nil {
+	g, err := ds.AddGroup(domain, "Group1")
+	if err != nil {
 		t.Fatal(err)
 	}
-	cg, err := ds.GetGroup(g.ID)
+	if err := ds.AddGroupHosts(domain, g.ID, Host{Name: "Host1", Domain: domain}); err != nil {
+		t.Fatal(err)
+	}
+	cg, err := ds.GetGroup(domain, g.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,14 +109,18 @@ func TestDoitActionAddGroupHosts(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddGroupHosts.db")
 	ds.Store.InitSchema(true)
-	g, err := ds.AddGroup("Group1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddGroupHosts(g.ID, []Host{Host{Name: "Host11"}, Host{Name: "Host2"}}...); err != nil {
+	g, err := ds.AddGroup(domain, "Group1")
+	if err != nil {
 		t.Fatal(err)
 	}
-	cg, err := ds.GetGroup(g.ID)
+	if err := ds.AddGroupHosts(domain, g.ID, []Host{Host{Name: "Host11", Domain: domain}, Host{Name: "Host2", Domain: domain}}...); err != nil {
+		t.Fatal(err)
+	}
+	cg, err := ds.GetGroup(domain, g.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

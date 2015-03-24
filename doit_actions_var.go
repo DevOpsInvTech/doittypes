@@ -1,16 +1,16 @@
 package main
 
 //AddVar Add new var to datastore
-func (ds *DoitServer) AddVar(name string, value string) (v *Var, err error) {
-	v = &Var{Name: name, Value: value}
+func (ds *DoitServer) AddVar(d *Domain, name string, value string) (v *Var, err error) {
+	v = &Var{Name: name, Value: value, Domain: d}
 	ds.Store.Conn.NewRecord(v)
 	gormErr := ds.Store.Conn.Create(&v)
 	return v, gormErr.Error
 }
 
 //UpdateVar Update Var
-func (ds *DoitServer) UpdateVar(id int, value string) error {
-	v, err := ds.GetVar(id)
+func (ds *DoitServer) UpdateVar(d *Domain, id int, value string) error {
+	v, err := ds.GetVar(d, id)
 	if err != nil {
 		return err
 	}
@@ -23,8 +23,8 @@ func (ds *DoitServer) UpdateVar(id int, value string) error {
 }
 
 //RemoveVar Remove Var
-func (ds *DoitServer) RemoveVar(id int) error {
-	v, err := ds.GetVar(id)
+func (ds *DoitServer) RemoveVar(d *Domain, id int) error {
+	v, err := ds.GetVar(d, id)
 	if err != nil {
 		return err
 	}
@@ -36,8 +36,8 @@ func (ds *DoitServer) RemoveVar(id int) error {
 }
 
 //GetVar Get Var from datastore
-func (ds *DoitServer) GetVar(id int) (*Var, error) {
-	v := &Var{ID: id}
+func (ds *DoitServer) GetVar(d *Domain, id int) (*Var, error) {
+	v := &Var{ID: id, Domain: d}
 	gormErr := ds.Store.Conn.First(&v)
 	if gormErr.Error != nil {
 		return v, gormErr.Error

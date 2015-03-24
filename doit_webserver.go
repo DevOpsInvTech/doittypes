@@ -7,38 +7,40 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func domainHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) domainHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func hostHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) hostHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func groupHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) groupHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func varsHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) varsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func ansibleHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) ansibleHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func apiHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	domain := vars["type"]
 	reqType := vars["type"]
 	reqName := vars["name"]
 
 	log.Println("Type: ", reqType)
 	log.Println("Name: ", reqName)
 	log.Println("Method: ", r.Method)
+	log.Println("Domain: ", domain)
 
 	switch reqType {
 	case "host":

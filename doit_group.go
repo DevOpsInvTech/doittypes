@@ -8,7 +8,7 @@ import (
 type Group struct {
 	ID        int    `sql:"not null;unique;AUTO_INCREMENT"`
 	Name      string `sql:"unique"`
-	Domain    Domain
+	Domain    *Domain
 	DomainID  sql.NullInt64
 	Hosts     []Host `gorm:"many2many:group_hosts;"`
 	Vars      []Var  `gorm:"many2many:group_vars;"`

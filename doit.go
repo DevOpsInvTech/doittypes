@@ -3,10 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"net"
-	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -32,20 +28,8 @@ func main() {
 	}
 
 	if *serverMode {
-		r := mux.NewRouter()
-		r.HandleFunc("/", homeHandler)
-		r.HandleFunc("/domains", domainHandler)
-		r.HandleFunc("/hosts", hostHandler)
-		r.HandleFunc("/groups", groupHandler)
-		r.HandleFunc("/group_vars", varsHandler)
-		r.HandleFunc("/group_vars/{group}/list", varsHandler)
-		r.HandleFunc("/api/1/{type}/{name}", apiHandler).Methods("POST", "DELETE", "PUT", "GET")
-		r.HandleFunc("/api/ansible", ansibleHandler).Methods("GET")
-
-		http.Handle("/", r)
-		if err := http.ListenAndServe(net.JoinHostPort("", *port), nil); err != nil {
-			log.Println(err)
-		}
+		ds := &DoitServer{Store: &DoitStorage{}}
+		ds.Listen(port, dc)
 	} else {
 		//TODO: Act as a CLI client
 	}

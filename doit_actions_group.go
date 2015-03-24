@@ -1,16 +1,24 @@
 package main
 
 //AddGroup Add group to datastore
-func (ds *DoitServer) AddGroup(name string) (g *Group, err error) {
-	g = &Group{Name: name}
+func (ds *DoitServer) AddGroup(d *Domain, name string) (g *Group, err error) {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return g, err
+	}
+	g = &Group{Name: name, Domain: domain}
 	ds.Store.Conn.NewRecord(g)
 	gormErr := ds.Store.Conn.Create(&g)
 	return g, gormErr.Error
 }
 
 //AddGroupVars Add new Vars to Host
-func (ds *DoitServer) AddGroupVars(id int, vars ...Var) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) AddGroupVars(d *Domain, id int, vars ...Var) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -19,8 +27,12 @@ func (ds *DoitServer) AddGroupVars(id int, vars ...Var) error {
 }
 
 //RemoveGroupVars Remove Vars from Host
-func (ds *DoitServer) RemoveGroupVars(id int, vars ...Var) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) RemoveGroupVars(d *Domain, id int, vars ...Var) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -32,8 +44,12 @@ func (ds *DoitServer) RemoveGroupVars(id int, vars ...Var) error {
 }
 
 //AddGroupHosts Add new Vars to Host
-func (ds *DoitServer) AddGroupHosts(id int, hosts ...Host) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) AddGroupHosts(d *Domain, id int, hosts ...Host) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -42,8 +58,12 @@ func (ds *DoitServer) AddGroupHosts(id int, hosts ...Host) error {
 }
 
 //RemoveGroupHosts Remove Vars from Host
-func (ds *DoitServer) RemoveGroupHosts(id int, hosts ...Host) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) RemoveGroupHosts(d *Domain, id int, hosts ...Host) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -55,8 +75,12 @@ func (ds *DoitServer) RemoveGroupHosts(id int, hosts ...Host) error {
 }
 
 //AddGroupDomains Add new Vars to Host
-func (ds *DoitServer) AddGroupDomains(id int, domains ...Domain) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) AddGroupDomains(d *Domain, id int, domains ...Domain) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -65,8 +89,12 @@ func (ds *DoitServer) AddGroupDomains(id int, domains ...Domain) error {
 }
 
 //RemoveGroupDomains Remove Vars from Host
-func (ds *DoitServer) RemoveGroupDomains(id int, domains ...Domain) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) RemoveGroupDomains(d *Domain, id int, domains ...Domain) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -78,8 +106,12 @@ func (ds *DoitServer) RemoveGroupDomains(id int, domains ...Domain) error {
 }
 
 //RemoveGroup Remove group and its relationships to other objects
-func (ds *DoitServer) RemoveGroup(id int) error {
-	g, err := ds.GetGroup(id)
+func (ds *DoitServer) RemoveGroup(d *Domain, id int) error {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return err
+	}
+	g, err := ds.GetGroup(domain, id)
 	if err != nil {
 		return err
 	}
@@ -103,8 +135,8 @@ func (ds *DoitServer) RemoveGroup(id int) error {
 }
 
 //GetGroup Get Var from datastore
-func (ds *DoitServer) GetGroup(id int) (*Group, error) {
-	g := &Group{ID: id}
+func (ds *DoitServer) GetGroup(d *Domain, id int) (*Group, error) {
+	g := &Group{ID: id, Domain: d}
 	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
 	if gormErr.Error != nil {
 		return g, gormErr.Error

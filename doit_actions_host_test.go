@@ -6,11 +6,15 @@ func TestDoitActionAddHost(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddHost.db")
 	ds.Store.InitSchema(true)
-	newHost, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetHost(newHost.ID)
+	newHost, err := ds.AddHost(domain, "Steve")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetHost(domain, newHost.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,14 +26,18 @@ func TestDoitActionAddHostVar(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddHostVar.db")
 	ds.Store.InitSchema(true)
-	newHost, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(newHost.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+	newHost, err := ds.AddHost(domain, "Steve")
+	if err != nil {
 		t.Fatal(err)
 	}
-	checkHost, err := ds.GetHost(newHost.ID)
+	if err := ds.AddHostVars(domain, newHost.ID, HostVar{Name: "Var1", Value: "Val1", Domain: domain}); err != nil {
+		t.Fatal(err)
+	}
+	checkHost, err := ds.GetHost(domain, newHost.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,14 +54,18 @@ func TestDoitActionAddHostVars(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddHostVars.db")
 	ds.Store.InitSchema(true)
-	newHost, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(newHost.ID, []HostVar{HostVar{Name: "Var1", Value: "Val1"}, HostVar{Name: "Var2", Value: "Val2"}}...); err != nil {
+	newHost, err := ds.AddHost(domain, "Steve")
+	if err != nil {
 		t.Fatal(err)
 	}
-	checkHost, err := ds.GetHost(newHost.ID)
+	if err := ds.AddHostVars(domain, newHost.ID, []HostVar{HostVar{Name: "Var1", Value: "Val1"}, HostVar{Name: "Var2", Value: "Val2"}}...); err != nil {
+		t.Fatal(err)
+	}
+	checkHost, err := ds.GetHost(domain, newHost.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,14 +84,18 @@ func TestDoitActionRemoveHost(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionRemoveHost.db")
 	ds.Store.InitSchema(true)
-	h, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveHost(h.ID); err != nil {
+	h, err := ds.AddHost(domain, "Steve")
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetHost(h.ID)
+	if err := ds.RemoveHost(domain, h.ID); err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetHost(domain, h.ID)
 	if err == nil {
 		t.Fatal("Host found in database")
 	}
@@ -91,17 +107,21 @@ func TestDoitActionRemoveHostAndVars(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionRemoveHostAndVars.db")
 	ds.Store.InitSchema(true)
-	h, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+	h, err := ds.AddHost(domain, "Steve")
+	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveHost(h.ID); err != nil {
+	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetHost(h.ID)
+	if err := ds.RemoveHost(domain, h.ID); err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetHost(domain, h.ID)
 	if err == nil {
 		t.Fatal("Host found in database")
 	}
@@ -113,18 +133,22 @@ func TestDoitActionRemoveHostVars(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionRemoveHostVars.db")
 	ds.Store.InitSchema(true)
-	h, err := ds.AddHost("Steve")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+	h, err := ds.AddHost(domain, "Steve")
+	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveHostVars(h.ID, HostVar{ID: 1, Name: "Var1", Value: "Val1"}); err != nil {
+	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := ds.RemoveHostVars(domain, h.ID, HostVar{ID: 1, Name: "Var1", Value: "Val1"}); err != nil {
 		t.Fatal(err)
 	}
 	checkHost := &Host{}
-	checkHost, err = ds.GetHost(h.ID)
+	checkHost, err = ds.GetHost(domain, h.ID)
 	if err != nil {
 		t.Fatal("Host not found in database")
 	}

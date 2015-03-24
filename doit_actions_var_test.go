@@ -6,11 +6,15 @@ func TestDoitActionAddVar(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionAddVar.db")
 	ds.Store.InitSchema(true)
-	v, err := ds.AddVar("Val1", "Var1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetVar(v.ID)
+	v, err := ds.AddVar(domain, "Val1", "Var1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetVar(domain, v.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,14 +26,18 @@ func TestDoitActionRemoveVar(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionRemoveVar.db")
 	ds.Store.InitSchema(true)
-	v, err := ds.AddVar("Val1", "Var1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveVar(v.ID); err != nil {
+	v, err := ds.AddVar(domain, "Val1", "Var1")
+	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ds.GetVar(v.ID)
+	if err := ds.RemoveVar(domain, v.ID); err != nil {
+		t.Fatal(err)
+	}
+	_, err = ds.GetVar(domain, v.ID)
 	if err == nil {
 		t.Fatal("Var found in database")
 	}
@@ -41,15 +49,19 @@ func TestDoitActionUpdateVar(t *testing.T) {
 	ds := &DoitServer{}
 	ds.OpenDatastore("sqlite3", "_test_tmp/TestDoitActionUpdateVar.db")
 	ds.Store.InitSchema(true)
-	v, err := ds.AddVar("Val1", "Var1")
+	domain, err := ds.AddDomain("Domain1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = ds.UpdateVar(v.ID, "Var2")
+	v, err := ds.AddVar(domain, "Val1", "Var1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	cv, err := ds.GetVar(v.ID)
+	err = ds.UpdateVar(domain, v.ID, "Var2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cv, err := ds.GetVar(domain, v.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

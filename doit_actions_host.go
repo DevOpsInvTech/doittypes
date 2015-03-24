@@ -6,16 +6,20 @@ import (
 )
 
 //AddHost Add new host to the datastore
-func (ds *DoitServer) AddHost(name string) (h *Host, err error) {
-	h = &Host{Name: name}
+func (ds *DoitServer) AddHost(d *Domain, name string) (h *Host, err error) {
+	domain, err := ds.GetDomain(d.ID)
+	if err != nil {
+		return h, err
+	}
+	h = &Host{Name: name, Domain: domain}
 	ds.Store.Conn.NewRecord(h)
 	gormErr := ds.Store.Conn.Create(&h)
 	return h, gormErr.Error
 }
 
 //AddHostVars Add new Vars to Host
-func (ds *DoitServer) AddHostVars(id int, vars ...HostVar) error {
-	h, err := ds.GetHost(id)
+func (ds *DoitServer) AddHostVars(d *Domain, id int, vars ...HostVar) error {
+	h, err := ds.GetHost(d, id)
 	if err != nil {
 		return err
 	}
@@ -24,14 +28,14 @@ func (ds *DoitServer) AddHostVars(id int, vars ...HostVar) error {
 }
 
 //RemoveHostVars Remove Vars from Host
-func (ds *DoitServer) RemoveHostVars(id int, vars ...HostVar) error {
-	h, err := ds.GetHost(id)
+func (ds *DoitServer) RemoveHostVars(d *Domain, id int, vars ...HostVar) error {
+	h, err := ds.GetHost(d, id)
 	if err != nil {
 		return err
 	}
 	for i, v := range vars {
 		fmt.Println(i)
-		rmVar, err := ds.GetHostVar(v.ID)
+		rmVar, err := ds.GetHostVar(d, v.ID)
 		fmt.Println(rmVar)
 		if err != nil {
 			return err
@@ -49,8 +53,8 @@ func (ds *DoitServer) RemoveHostVars(id int, vars ...HostVar) error {
 }
 
 //RemoveHost Remove host from datastore
-func (ds *DoitServer) RemoveHost(id int) error {
-	h, err := ds.GetHost(id)
+func (ds *DoitServer) RemoveHost(d *Domain, id int) error {
+	h, err := ds.GetHost(d, id)
 	if err != nil {
 		return err
 	}
@@ -68,8 +72,8 @@ func (ds *DoitServer) RemoveHost(id int) error {
 }
 
 //GetHost Get host from datastore
-func (ds *DoitServer) GetHost(id int) (*Host, error) {
-	h := &Host{ID: id}
+func (ds *DoitServer) GetHost(d *Domain, id int) (*Host, error) {
+	h := &Host{ID: id, Domain: d}
 	gormErr := ds.Store.Conn.First(&h).Related(&h.Vars, "Vars")
 	if gormErr.Error != nil {
 		return h, gormErr.Error
@@ -78,8 +82,8 @@ func (ds *DoitServer) GetHost(id int) (*Host, error) {
 }
 
 //GetHostVar Get HostVar from datastore
-func (ds *DoitServer) GetHostVar(id int) (*HostVar, error) {
-	v := &HostVar{ID: id}
+func (ds *DoitServer) GetHostVar(d *Domain, id int) (*HostVar, error) {
+	v := &HostVar{ID: id, Domain: d}
 	ds.Store.Conn.First(&v)
 	if v.Name != "" {
 		return v, nil
