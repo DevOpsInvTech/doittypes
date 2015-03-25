@@ -1,6 +1,9 @@
 package main
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	_ "github.com/mattn/go-sqlite3"
+)
 
 type DoitStorage struct {
 	Type     string

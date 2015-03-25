@@ -100,3 +100,13 @@ func (ds *DoitServer) GetDomain(id int) (*Domain, error) {
 	}
 	return d, nil
 }
+
+//GetDomainByName Get Var from datastore
+func (ds *DoitServer) GetDomainByName(name string) (*Domain, error) {
+	d := &Domain{Name: name}
+	gormErr := ds.Store.Conn.First(&d)
+	if gormErr.Error != nil {
+		return d, gormErr.Error
+	}
+	return d, nil
+}

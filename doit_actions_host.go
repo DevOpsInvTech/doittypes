@@ -81,6 +81,16 @@ func (ds *DoitServer) GetHost(d *Domain, id int) (*Host, error) {
 	return h, nil
 }
 
+//GetHostByName Get host from datastore
+func (ds *DoitServer) GetHostByName(d *Domain, name string) (*Host, error) {
+	h := &Host{Name: name, Domain: d}
+	gormErr := ds.Store.Conn.First(&h).Related(&h.Vars, "Vars")
+	if gormErr.Error != nil {
+		return h, gormErr.Error
+	}
+	return h, nil
+}
+
 //GetHostVar Get HostVar from datastore
 func (ds *DoitServer) GetHostVar(d *Domain, id int) (*HostVar, error) {
 	v := &HostVar{ID: id, Domain: d}

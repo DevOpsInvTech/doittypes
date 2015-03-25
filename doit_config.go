@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 
 	"gopkg.in/yaml.v2"
 )
@@ -27,12 +26,12 @@ func (dc *DoitConfig) Read(file string) error {
 	if err != nil {
 		return err
 	}
-	log.Println(string(data))
 	nc := &DoitConfig{}
 	err = yaml.Unmarshal(data, &nc)
 	if err != nil {
 		return err
 	}
-	log.Println(nc.Server.Enable)
+	dc.Server = nc.Server
+	dc.Storage = nc.Storage
 	return nil
 }

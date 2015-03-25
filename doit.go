@@ -14,7 +14,7 @@ func main() {
 
 	flag.Parse()
 
-	log.Println(port, serverMode, config)
+	log.Println(*port, *serverMode, *config)
 
 	if *config != "" {
 		//load config
@@ -27,9 +27,14 @@ func main() {
 
 	}
 
+	log.Printf("%#v", dc)
 	if *serverMode {
-		ds := &DoitServer{Store: &DoitStorage{}}
-		ds.Listen(port, dc)
+		storage, err := NewStorage(dc.Storage.Type, dc.Storage.Location)
+		ds := &DoitServer{Store: storage}
+		err = ds.Listen(port, dc)
+		if err != nil {
+			panic(err)
+		}
 	} else {
 		//TODO: Act as a CLI client
 	}
