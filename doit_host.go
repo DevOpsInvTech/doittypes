@@ -6,21 +6,21 @@ import (
 )
 
 type Host struct {
-	ID        int       `sql:"not null;unique;AUTO_INCREMENT"`
-	Name      string    `sql:"unique"`
-	Vars      []HostVar `gorm:"many2many:hostvars_vars;"`
-	Domain    *Domain
-	DomainID  sql.NullInt64
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Name      string        `sql:"unique" json:"name"`
+	Vars      []HostVar     `gorm:"many2many:hostvars_vars;" json:"vars,omitempty"`
+	Domain    *Domain       `json:"domain"`
+	DomainID  sql.NullInt64 `json:"-"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }
 
 type HostVar struct {
-	ID        int    `sql:"not null;unique;AUTO_INCREMENT"`
-	Name      string `sql:"unique"`
-	Value     string
-	Domain    *Domain
-	DomainID  sql.NullInt64
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Name      string        `sql:"unique" json:"name"`
+	Value     string        `json:"value"`
+	Domain    *Domain       `json:"domain"`
+	DomainID  sql.NullInt64 `json:"-"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }

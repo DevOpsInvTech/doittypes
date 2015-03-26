@@ -23,8 +23,8 @@ func (ds *DoitServer) UpdateVar(d *Domain, id int, value string) error {
 }
 
 //RemoveVar Remove Var
-func (ds *DoitServer) RemoveVar(d *Domain, id int) error {
-	v, err := ds.GetVar(d, id)
+func (ds *DoitServer) RemoveVar(d *Domain, v *Var) error {
+	v, err := ds.GetVar(d, v.ID)
 	if err != nil {
 		return err
 	}

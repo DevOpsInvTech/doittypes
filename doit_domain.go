@@ -3,8 +3,8 @@ package main
 import "time"
 
 type Domain struct {
-	ID        int    `sql:"not null;unique;AUTO_INCREMENT"`
-	Name      string `sql:"unique"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int       `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Name      string    `sql:"unique" json:"name"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }

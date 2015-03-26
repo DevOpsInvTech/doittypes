@@ -6,14 +6,14 @@ import (
 )
 
 type Group struct {
-	ID        int    `sql:"not null;unique;AUTO_INCREMENT"`
-	Name      string `sql:"unique"`
-	Domain    *Domain
-	DomainID  sql.NullInt64
-	Hosts     []Host `gorm:"many2many:group_hosts;"`
-	Vars      []Var  `gorm:"many2many:group_vars;"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Name      string        `sql:"unique" json:"name"`
+	Domain    *Domain       `json:"domain"`
+	DomainID  sql.NullInt64 `json:"-"`
+	Hosts     []Host        `gorm:"many2many:group_hosts;" json:"hosts,omitempty"`
+	Vars      []Var         `gorm:"many2many:group_vars;" json:"vars,omitempty"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }
 
 type GroupMatrix struct {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -65,19 +65,36 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		switch r.Method {
 		case "GET":
-			host, err := ds.GetHostByName(d, reqName)
+			h, err := ds.GetHostByName(d, reqName)
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println(host)
-		case "PUT":
-			host, err := ds.AddHost(d, reqName)
+			data, err := json.Marshal(h)
 			if err != nil {
-				panic(err)
+				w.WriteHeader(500)
 			}
-			log.Printf("%#v", host)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(data)
 		case "POST":
+			h, err := ds.AddHost(d, reqName)
+			data, err := json.Marshal(h)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(data)
+		case "PUT":
+		//TODO: Add host items here
 		case "DELETE":
+			h, err := ds.GetHostByName(d, reqName)
+			if err != nil {
+				panic(err)
+			}
+			err = ds.RemoveHost(d, h)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.WriteHeader(200)
 		}
 	case "group":
 		if d.ID == 0 && d.Name == "" {
@@ -85,14 +102,34 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		switch r.Method {
 		case "GET":
-		case "PUT":
-			host, err := ds.AddGroup(d, reqName)
+			g, err := ds.GetGroupByName(d, reqName)
 			if err != nil {
 				panic(err)
 			}
-			log.Printf("%#v", host)
+			data, err := json.Marshal(g)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(data)
 		case "POST":
+			h, err := ds.AddGroup(d, reqName)
+			if err != nil {
+				panic(err)
+			}
+			log.Printf("%#v", h)
+		case "PUT":
+		//TODO: Add group items here
 		case "DELETE":
+			g, err := ds.GetGroupByName(d, reqName)
+			if err != nil {
+				panic(err)
+			}
+			err = ds.RemoveGroup(d, g)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.WriteHeader(200)
 		}
 	case "var":
 		if d.ID == 0 && d.Name == "" {
@@ -105,30 +142,61 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 			log.Printf("%#v", v)
-		case "PUT":
+			data, err := json.Marshal(v)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(data)
+		case "POST":
 			host, err := ds.AddVar(d, reqName, reqValue)
 			if err != nil {
 				panic(err)
 			}
 			log.Printf("%#v", host)
-		case "POST":
+		case "PUT":
 		case "DELETE":
+			v, err := ds.GetVarByName(d, reqName)
+			if err != nil {
+				panic(err)
+			}
+			err = ds.RemoveVar(d, v)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.WriteHeader(200)
 		}
 	case "domain":
 		switch r.Method {
 		case "GET":
-			d, err = ds.GetDomainByName(domain)
+			d, err = ds.GetDomainByName(reqName)
 			if err != nil {
 				panic(err)
 			}
-		case "PUT":
+			data, err := json.Marshal(d)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(data)
+		case "POST":
 			domain, err := ds.AddDomain(reqName)
 			if err != nil {
 				panic(err)
 			}
 			log.Printf("%#v", domain)
-		case "POST":
+		case "PUT":
+			//TODO: Add Domain items here
 		case "DELETE":
+			d, err := ds.GetDomainByName(reqName)
+			if err != nil {
+				panic(err)
+			}
+			err = ds.RemoveDomain(d)
+			if err != nil {
+				w.WriteHeader(500)
+			}
+			w.WriteHeader(200)
 		}
 
 	}

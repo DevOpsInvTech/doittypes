@@ -106,12 +106,12 @@ func (ds *DoitServer) RemoveGroupDomains(d *Domain, id int, domains ...Domain) e
 }
 
 //RemoveGroup Remove group and its relationships to other objects
-func (ds *DoitServer) RemoveGroup(d *Domain, id int) error {
+func (ds *DoitServer) RemoveGroup(d *Domain, group *Group) error {
 	domain, err := ds.GetDomain(d.ID)
 	if err != nil {
 		return err
 	}
-	g, err := ds.GetGroup(domain, id)
+	g, err := ds.GetGroup(domain, group.ID)
 	if err != nil {
 		return err
 	}
@@ -137,6 +137,16 @@ func (ds *DoitServer) RemoveGroup(d *Domain, id int) error {
 //GetGroup Get Var from datastore
 func (ds *DoitServer) GetGroup(d *Domain, id int) (*Group, error) {
 	g := &Group{ID: id, Domain: d}
+	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
+	if gormErr.Error != nil {
+		return g, gormErr.Error
+	}
+	return g, nil
+}
+
+//GetGroupByName Get host from datastore
+func (ds *DoitServer) GetGroupByName(d *Domain, name string) (*Group, error) {
+	g := &Group{Name: name, Domain: d}
 	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
 	if gormErr.Error != nil {
 		return g, gormErr.Error

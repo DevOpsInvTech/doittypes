@@ -78,8 +78,8 @@ func (ds *DoitServer) RemoveDomainGroups(id int, groups ...Group) error {
 }
 
 //RemoveDomain Remove Domain and its relationships to other objects
-func (ds *DoitServer) RemoveDomain(id int) error {
-	d, err := ds.GetDomain(id)
+func (ds *DoitServer) RemoveDomain(d *Domain) error {
+	d, err := ds.GetDomain(d.ID)
 	if err != nil {
 		return err
 	}

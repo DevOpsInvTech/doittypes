@@ -6,11 +6,11 @@ import (
 )
 
 type Var struct {
-	ID        int `sql:"not null;unique;AUTO_INCREMENT"`
-	Domain    *Domain
-	DomainID  sql.NullInt64
-	Name      string `sql:"unique"`
-	Value     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Domain    *Domain       `json:"domain"`
+	DomainID  sql.NullInt64 `json:"-"`
+	Name      string        `sql:"unique json:"name""`
+	Value     string        `json:"value"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }

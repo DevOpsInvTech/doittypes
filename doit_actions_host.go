@@ -53,8 +53,8 @@ func (ds *DoitServer) RemoveHostVars(d *Domain, id int, vars ...HostVar) error {
 }
 
 //RemoveHost Remove host from datastore
-func (ds *DoitServer) RemoveHost(d *Domain, id int) error {
-	h, err := ds.GetHost(d, id)
+func (ds *DoitServer) RemoveHost(d *Domain, host *Host) error {
+	h, err := ds.GetHost(d, host.ID)
 	if err != nil {
 		return err
 	}
