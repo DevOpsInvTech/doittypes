@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
 	"net/url"
 	"strings"
+)
+
+const (
+	JSONMime = "application/json"
 )
 
 type DoitClient struct {
@@ -23,20 +23,15 @@ func (dc *DoitClient) SetURL(apiurl string) error {
 	return nil
 }
 
-func (dc *DoitClient) createAPIURL(kind string) string {
-	fURL := strings.Join([]string{kind}, "/")
+func (dc *DoitClient) createAPIURL(kind string, key string, value string, domain string) string {
+	fURL := strings.Join([]string{dc.URL.String(), kind, key}, "/")
+	if domain != "" {
+		fURL = strings.Join([]string{fURL, "?domain=", domain}, "")
+	}
+	if value != "" && domain != "" {
+		fURL = strings.Join([]string{fURL, "&value=", value}, "")
+	} else if value != "" && domain == "" {
+		fURL = strings.Join([]string{fURL, "?value=", value}, "")
+	}
 	return fURL
-}
-
-func (dc *DoitClient) GetHost(*Host, error) {
-	res, err := http.Get(dc.createAPIURL("host"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	robots, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s", robots)
 }

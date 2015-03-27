@@ -92,7 +92,7 @@ func TestDoitActionRemoveHost(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveHost(domain, h.ID); err != nil {
+	if err := ds.RemoveHost(domain, h); err != nil {
 		t.Fatal(err)
 	}
 	_, err = ds.GetHost(domain, h.ID)
@@ -118,7 +118,7 @@ func TestDoitActionRemoveHostAndVars(t *testing.T) {
 	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveHost(domain, h.ID); err != nil {
+	if err := ds.RemoveHost(domain, h); err != nil {
 		t.Fatal(err)
 	}
 	_, err = ds.GetHost(domain, h.ID)

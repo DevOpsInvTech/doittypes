@@ -34,7 +34,7 @@ func TestDoitActionRemoveVar(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.RemoveVar(domain, v.ID); err != nil {
+	if err := ds.RemoveVar(domain, v); err != nil {
 		t.Fatal(err)
 	}
 	_, err = ds.GetVar(domain, v.ID)
