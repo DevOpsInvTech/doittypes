@@ -33,7 +33,8 @@ func TestClientDeleteVar(t *testing.T) {
 	}
 	v, err := dc.GetVar(&Domain{Name: "foo"}, &Var{Name: "hello2"})
 	if err != nil {
-		t.Fatal(err)
+		t.Log("Var removed succesfully")
+	} else {
+		t.Fatal(v, "Var found")
 	}
-	log.Printf("%#v", v)
 }

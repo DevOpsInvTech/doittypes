@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -15,10 +16,13 @@ func (dc *DoitClient) GetVar(d *Domain, v *Var) (*Var, error) {
 	data, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		return newVar, err
+		return nil, err
 	}
 	json.Unmarshal(data, &newVar)
-	return newVar, nil
+	if res.StatusCode == 200 {
+		return newVar, nil
+	}
+	return nil, errors.New(res.Status)
 }
 
 func (dc *DoitClient) CreateVar(d *Domain, v *Var) error {
@@ -31,7 +35,10 @@ func (dc *DoitClient) CreateVar(d *Domain, v *Var) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	if res.StatusCode == 200 {
+		return nil
+	}
+	return errors.New(res.Status)
 }
 
 func (dc *DoitClient) DeleteVar(d *Domain, v *Var) error {
@@ -46,5 +53,8 @@ func (dc *DoitClient) DeleteVar(d *Domain, v *Var) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	if res.StatusCode == 200 {
+		return nil
+	}
+	return errors.New(res.Status)
 }

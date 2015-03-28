@@ -24,3 +24,6 @@ _testmain.go
 *.prof
 
 _test_tmp/*.db
+
+#block if we build the server
+doit-server
