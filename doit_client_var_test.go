@@ -24,6 +24,22 @@ func TestClientGetVar(t *testing.T) {
 	log.Printf("%#v", v)
 }
 
+func TestClientUpdateVar(t *testing.T) {
+	dc := &DoitClient{}
+	dc.SetURL("http://localhost:8080/api/1")
+	err := dc.UpdateVar(&Domain{Name: "foo"}, &Var{Name: "hello2", Value: "over"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err := dc.GetVar(&Domain{Name: "foo"}, &Var{Name: "hello2"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if v.Value != "over" {
+		t.Fatal("Var not updated")
+	}
+}
+
 func TestClientDeleteVar(t *testing.T) {
 	dc := &DoitClient{}
 	dc.SetURL("http://localhost:8080/api/1")
@@ -31,10 +47,10 @@ func TestClientDeleteVar(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v, err := dc.GetVar(&Domain{Name: "foo"}, &Var{Name: "hello2"})
+	_, err = dc.GetVar(&Domain{Name: "foo"}, &Var{Name: "hello2"})
 	if err != nil {
 		t.Log("Var removed succesfully")
 	} else {
-		t.Fatal(v, "Var found")
+		t.Fatal("Var found")
 	}
 }

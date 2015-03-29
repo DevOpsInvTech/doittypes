@@ -147,7 +147,7 @@ func (ds *DoitServer) GetGroup(d *Domain, id int) (*Group, error) {
 //GetGroupByName Get host from datastore
 func (ds *DoitServer) GetGroupByName(d *Domain, name string) (*Group, error) {
 	g := &Group{Name: name, Domain: d}
-	gormErr := ds.Store.Conn.First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
+	gormErr := ds.Store.Conn.Where("name = ? and domain_id = ?", name, d.ID).First(&g).Related(&g.Vars, "Vars").Related(&g.Hosts, "Hosts")
 	if gormErr.Error != nil {
 		return g, gormErr.Error
 	}

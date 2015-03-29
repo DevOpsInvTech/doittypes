@@ -48,7 +48,7 @@ func (ds *DoitServer) GetVar(d *Domain, id int) (*Var, error) {
 //GetVarByName Get Var from datastore
 func (ds *DoitServer) GetVarByName(d *Domain, name string) (*Var, error) {
 	v := &Var{Name: name, Domain: d}
-	gormErr := ds.Store.Conn.First(&v)
+	gormErr := ds.Store.Conn.Where("name = ? and domain_id = ?", name, d.ID).First(&v)
 	if gormErr.Error != nil {
 		return v, gormErr.Error
 	}

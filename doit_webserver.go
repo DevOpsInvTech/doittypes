@@ -59,8 +59,8 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 		var err error
 		d, err = ds.GetDomainByName(domain)
 		if err != nil {
-			log.Errorln("Unable to find domain", domain)
-			w.WriteHeader(404)
+			w.WriteHeader(http.StatusNotFound)
+			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
 	}
@@ -71,26 +71,34 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 		case "GET":
 			h, err := ds.GetHostByName(d, reqName)
 			if err != nil {
-				log.Errorln("Unable to find host", reqName)
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
 				return
 			}
 			data, err := json.Marshal(h)
 			if err != nil {
-				w.WriteHeader(500)
+				log.Errorln("Unable to marshal json", data)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)
+			ds.logger(r, http.StatusOK, len(data))
 		case "POST":
-			h, err := ds.AddHost(d, reqName)
-			data, err := json.Marshal(h)
+			_, err := ds.AddHost(d, reqName)
 			if err != nil {
-				w.WriteHeader(500)
+				//TODO: What error to throw here?
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(data)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		case "PUT":
-		//TODO: Add host items here
+			//TODO: Add host items here
+			w.WriteHeader(http.StatusNotImplemented)
+			ds.logger(r, http.StatusNotImplemented, 0)
 		case "DELETE":
 			h, err := ds.GetHostByName(d, reqName)
 			if err != nil {
@@ -107,100 +115,155 @@ func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
 		case "GET":
 			g, err := ds.GetGroupByName(d, reqName)
 			if err != nil {
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
 			data, err := json.Marshal(g)
 			if err != nil {
-				w.WriteHeader(500)
+				log.Errorln("Unable to marshal json", data)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)
+			ds.logger(r, http.StatusOK, len(data))
 		case "POST":
-			h, err := ds.AddGroup(d, reqName)
+			_, err := ds.AddGroup(d, reqName)
 			if err != nil {
-				panic(err)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
-			log.Printf("%#v", h)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		case "PUT":
-		//TODO: Add group items here
+			//TODO: Add group items here
+			w.WriteHeader(http.StatusNotImplemented)
+			ds.logger(r, http.StatusNotImplemented, 0)
 		case "DELETE":
 			g, err := ds.GetGroupByName(d, reqName)
 			if err != nil {
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
 			err = ds.RemoveGroup(d, g)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
-			w.WriteHeader(200)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		}
 	case "var":
 		switch r.Method {
 		case "GET":
 			v, err := ds.GetVarByName(d, reqName)
 			if err != nil {
-				log.Errorln("Unable to find var", reqName)
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
 				return
 			}
-			log.Printf("%#v", v)
 			data, err := json.Marshal(v)
 			if err != nil {
 				log.Errorln("Unable to marshal json", data)
-				w.WriteHeader(500)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)
-			ds.logger(r, 200, len(data))
+			ds.logger(r, http.StatusOK, len(data))
 		case "POST":
-			host, err := ds.AddVar(d, reqName, reqValue)
+			_, err := ds.AddVar(d, reqName, reqValue)
 			if err != nil {
-				w.WriteHeader(404)
+				//TODO: What error to throw here?
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
-			log.Printf("%#v", host)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		case "PUT":
+			v, err := ds.GetVarByName(d, reqName)
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
+			}
+			err = ds.UpdateVar(d, v.ID, reqValue)
+			if err != nil {
+				//TODO: WHAT TO RETURN HERE?
+				w.WriteHeader(http.StatusNotImplemented)
+				ds.logger(r, http.StatusNotImplemented, 0)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		case "DELETE":
 			v, err := ds.GetVarByName(d, reqName)
 			if err != nil {
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
 			err = ds.RemoveVar(d, v)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
-			w.WriteHeader(200)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		}
 	case "domain":
 		switch r.Method {
 		case "GET":
 			d, err = ds.GetDomainByName(reqName)
 			if err != nil {
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
 			data, err := json.Marshal(d)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(data)
+			ds.logger(r, http.StatusOK, len(data))
 		case "POST":
-			domain, err := ds.AddDomain(reqName)
+			_, err := ds.AddDomain(reqName)
 			if err != nil {
-				panic(err)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
-			log.Printf("%#v", domain)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		case "PUT":
-			//TODO: Add Domain items here
+			w.WriteHeader(http.StatusNotImplemented)
+			ds.logger(r, http.StatusNotImplemented, 0)
 		case "DELETE":
 			d, err := ds.GetDomainByName(reqName)
 			if err != nil {
-				w.WriteHeader(404)
+				w.WriteHeader(http.StatusNotFound)
+				ds.logger(r, http.StatusNotFound, 0)
+				return
 			}
 			err = ds.RemoveDomain(d)
 			if err != nil {
-				w.WriteHeader(500)
+				w.WriteHeader(http.StatusInternalServerError)
+				ds.logger(r, http.StatusInternalServerError, 0)
+				return
 			}
-			w.WriteHeader(200)
+			w.WriteHeader(http.StatusOK)
+			ds.logger(r, http.StatusOK, 0)
 		}
 
 	}
