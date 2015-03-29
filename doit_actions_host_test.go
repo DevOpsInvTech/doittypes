@@ -62,14 +62,15 @@ func TestDoitActionAddHostVars(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(domain, newHost.ID, []HostVar{HostVar{Name: "Var1", Value: "Val1"}, HostVar{Name: "Var2", Value: "Val2"}}...); err != nil {
+	if err := ds.AddHostVars(domain, newHost.ID, []HostVar{HostVar{Name: "Var1", Value: "Val1", Host: newHost, Domain: domain}, HostVar{Name: "Var2", Value: "Val2", Host: newHost, Domain: domain}}...); err != nil {
 		t.Fatal(err)
 	}
 	checkHost, err := ds.GetHost(domain, newHost.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(checkHost)
+	t.Log(len(checkHost.Vars))
+	t.Logf("%#v", checkHost.Vars)
 	if len(checkHost.Vars) == 2 {
 		t.Log("Two Vars seen")
 	} else {
@@ -115,7 +116,7 @@ func TestDoitActionRemoveHostAndVars(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1", Host: h, Domain: domain}); err != nil {
 		t.Fatal(err)
 	}
 	if err := ds.RemoveHost(domain, h); err != nil {
@@ -141,7 +142,7 @@ func TestDoitActionRemoveHostVars(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1"}); err != nil {
+	if err := ds.AddHostVars(domain, h.ID, HostVar{Name: "Var1", Value: "Val1", Host: h, Domain: domain}); err != nil {
 		t.Fatal(err)
 	}
 	if err := ds.RemoveHostVars(domain, h.ID, HostVar{ID: 1, Name: "Var1", Value: "Val1"}); err != nil {

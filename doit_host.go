@@ -21,6 +21,8 @@ type HostVar struct {
 	Value     string        `json:"value"`
 	Domain    *Domain       `json:"domain"`
 	DomainID  sql.NullInt64 `json:"-"`
+	Host      *Host         `json:"-"`
+	HostID    sql.NullInt64 `json:"-"`
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
 }

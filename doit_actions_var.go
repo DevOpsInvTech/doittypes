@@ -38,7 +38,7 @@ func (ds *DoitServer) RemoveVar(d *Domain, v *Var) error {
 //GetVar Get Var from datastore
 func (ds *DoitServer) GetVar(d *Domain, id int) (*Var, error) {
 	v := &Var{ID: id, Domain: d}
-	gormErr := ds.Store.Conn.First(&v)
+	gormErr := ds.Store.Conn.Where("id = ? and domain_id = ?", id, d.ID).First(&v)
 	if gormErr.Error != nil {
 		return v, gormErr.Error
 	}
@@ -53,4 +53,14 @@ func (ds *DoitServer) GetVarByName(d *Domain, name string) (*Var, error) {
 		return v, gormErr.Error
 	}
 	return v, nil
+}
+
+//GetVarsByDomain Get Vars from datastore
+func (ds *DoitServer) GetVarsByDomain(d *Domain) ([]*Var, error) {
+	vars := []*Var{}
+	gormErr := ds.Store.Conn.Where("domain_id = ?", d.ID).Find(&vars)
+	if gormErr.Error != nil {
+		return vars, gormErr.Error
+	}
+	return vars, nil
 }
