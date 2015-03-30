@@ -4,4 +4,4 @@ test:
 	godep go test -v .
 
 build:
-	godep go build .
+	godep go build -a .

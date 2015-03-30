@@ -43,15 +43,15 @@ func (ds *DoitServer) Listen(port *string, config *DoitConfig) (err error) {
 	r.HandleFunc("/api/1/var/{name}", ds.apiVarHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/vars", ds.apiVarsHandler).Methods("GET")
 	//groups
-	r.HandleFunc("/api/1/group/{name}/var/{varName}", ds.apiGroupHandler).Methods("POST", "DELETE", "PUT", "GET")
+	r.HandleFunc("/api/1/group/{name}/var/{varName}/value/{value}", ds.apiGroupHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/group/{name}/vars", ds.apiGroupHandler).Methods("GET")
 	r.HandleFunc("/api/1/group/{name}/host/{hostName}", ds.apiGroupHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/group/{name}/hosts", ds.apiGroupHandler).Methods("GET")
 	r.HandleFunc("/api/1/group/{name}", ds.apiGroupHandler).Methods("POST", "DELETE", "PUT", "GET")
-	r.HandleFunc("/api/1/groups", ds.apiGroupHandler).Methods("GET")
+	r.HandleFunc("/api/1/groups", ds.apiGroupsHandler).Methods("GET")
 	//hosts
 	r.HandleFunc("/api/1/host/{name}/var/{varName}/value/{value}", ds.apiHostVarHandler).Methods("POST", "DELETE", "PUT", "GET")
-	r.HandleFunc("/api/1/host/{name}/vars", ds.apiHostHandler).Methods("GET")
+	r.HandleFunc("/api/1/host/{name}/vars", ds.apiHostVarsHandler).Methods("GET")
 	r.HandleFunc("/api/1/host/{name}", ds.apiHostHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/hosts", ds.apiHostsHandler).Methods("GET")
 	//ansible
