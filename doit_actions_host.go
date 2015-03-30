@@ -15,7 +15,7 @@ func (ds *DoitServer) AddHost(d *Domain, name string) (h *Host, err error) {
 }
 
 //AddHostVars Add new Vars to Host
-func (ds *DoitServer) AddHostVars(d *Domain, id int, vars ...HostVar) error {
+func (ds *DoitServer) AddHostVars(d *Domain, id int, vars ...*HostVar) error {
 	h, err := ds.GetHost(d, id)
 	if err != nil {
 		return err
@@ -82,6 +82,16 @@ func (ds *DoitServer) GetHost(d *Domain, id int) (*Host, error) {
 func (ds *DoitServer) GetHostByName(d *Domain, name string) (*Host, error) {
 	h := &Host{Name: name, Domain: d}
 	gormErr := ds.Store.Conn.Where("name = ? and domain_id = ?", name, d.ID).Find(&h).Related(&h.Vars, "Vars")
+	if gormErr.Error != nil {
+		return nil, gormErr.Error
+	}
+	return h, nil
+}
+
+//GetHostsByDomain Get host from datastore
+func (ds *DoitServer) GetHostsByDomain(d *Domain) ([]*Host, error) {
+	h := []*Host{}
+	gormErr := ds.Store.Conn.Where("domain_id = ?", d.ID).Find(&h)
 	if gormErr.Error != nil {
 		return nil, gormErr.Error
 	}

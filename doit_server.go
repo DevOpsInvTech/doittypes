@@ -50,10 +50,10 @@ func (ds *DoitServer) Listen(port *string, config *DoitConfig) (err error) {
 	r.HandleFunc("/api/1/group/{name}", ds.apiGroupHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/groups", ds.apiGroupHandler).Methods("GET")
 	//hosts
-	r.HandleFunc("/api/1/host/{name}/var/{varName}", ds.apiHostHandler).Methods("POST", "DELETE", "PUT", "GET")
+	r.HandleFunc("/api/1/host/{name}/var/{varName}", ds.apiHostVarHandler).Methods("POST", "DELETE", "PUT", "GET")
 	r.HandleFunc("/api/1/host/{name}/vars", ds.apiHostHandler).Methods("GET")
 	r.HandleFunc("/api/1/host/{name}", ds.apiHostHandler).Methods("POST", "DELETE", "PUT", "GET")
-	r.HandleFunc("/api/1/hosts", ds.apiHostHandler).Methods("GET")
+	r.HandleFunc("/api/1/hosts", ds.apiHostsHandler).Methods("GET")
 	//ansible
 	r.HandleFunc("/api/ansible/domain/{name}", ds.ansibleHandler).Methods("GET")
 
