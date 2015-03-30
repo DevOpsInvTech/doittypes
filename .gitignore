@@ -24,6 +24,7 @@ _testmain.go
 *.prof
 
 _test_tmp/*.db
+_test_tmp/*.db-journal
 
 #block if we build the server
 doit-server
