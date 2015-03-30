@@ -20,6 +20,7 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
 	varName := vars["varName"]
+	value := vars["value"]
 
 	d := &Domain{}
 
@@ -57,7 +58,7 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		err = ds.AddHostVars(d, h.ID, &HostVar{Name: varName, Value: "", Domain: d})
+		err = ds.AddHostVars(d, h.ID, &HostVar{Name: varName, Value: value, Domain: d})
 		if err != nil {
 			//TODO: What error to throw here?
 			w.WriteHeader(http.StatusNotFound)
@@ -68,6 +69,7 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 		ds.logger(r, http.StatusOK, 0)
 	case "PUT":
 		//TODO: Add host items here
+		log.Println(value)
 		w.WriteHeader(http.StatusNotImplemented)
 		ds.logger(r, http.StatusNotImplemented, 0)
 	case "DELETE":
