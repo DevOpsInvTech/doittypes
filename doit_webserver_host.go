@@ -26,8 +26,8 @@ func (ds *DoitServer) apiHostHandler(w http.ResponseWriter, r *http.Request) {
 		var err error
 		d, err = ds.GetDomainByName(domain)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			w.WriteHeader(http.StatusBadRequest)
+			ds.logger(r, http.StatusBadRequest, 0)
 			return
 		}
 	}

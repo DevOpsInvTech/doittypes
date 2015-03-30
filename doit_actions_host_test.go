@@ -96,6 +96,7 @@ func TestDoitActionRemoveHost(t *testing.T) {
 	if err := ds.RemoveHost(domain, h); err != nil {
 		t.Fatal(err)
 	}
+
 	_, err = ds.GetHost(domain, h.ID)
 	if err == nil {
 		t.Fatal("Host found in database")

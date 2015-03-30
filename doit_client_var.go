@@ -25,8 +25,26 @@ func (dc *DoitClient) GetVar(d *Domain, v *Var) (*Var, error) {
 	return nil, errors.New(res.Status)
 }
 
+func (dc *DoitClient) GetVars(d *Domain) ([]*Var, error) {
+	newVars := []*Var{}
+	res, err := http.Get(dc.createAPIURL("vars", "", "", d.Name))
+	if err != nil {
+		return nil, err
+	}
+	data, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	json.Unmarshal(data, &newVars)
+	if res.StatusCode == 200 {
+		return newVars, nil
+	}
+	return nil, errors.New(res.Status)
+}
+
 func (dc *DoitClient) CreateVar(d *Domain, v *Var) error {
-	res, err := http.Post(dc.createAPIURL("var", v.Name, v.Value, d.Name), JSONMime, nil)
+	res, err := http.Post(dc.createAPIURL("var", v.Name, "there", d.Name), JSONMime, nil)
 	if err != nil {
 		return err
 	}

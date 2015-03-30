@@ -24,6 +24,16 @@ func TestClientGetDomain(t *testing.T) {
 	log.Printf("%#v", d)
 }
 
+func TestClientGetDomains(t *testing.T) {
+	dc := &DoitClient{}
+	dc.SetURL("http://localhost:8080/api/1")
+	d, err := dc.GetDomains()
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Printf("%#v", d)
+}
+
 func TestClientDeleteDomain(t *testing.T) {
 	dc := &DoitClient{}
 	dc.SetURL("http://localhost:8080/api/1")

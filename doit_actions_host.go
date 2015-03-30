@@ -1,9 +1,6 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
 //AddHost Add new host to the datastore
 func (ds *DoitServer) AddHost(d *Domain, name string) (h *Host, err error) {
@@ -74,9 +71,9 @@ func (ds *DoitServer) RemoveHost(d *Domain, host *Host) error {
 //GetHost Get host from datastore
 func (ds *DoitServer) GetHost(d *Domain, id int) (*Host, error) {
 	h := &Host{ID: id, Domain: d}
-	gormErr := ds.Store.Conn.Model(&h).Related(&h.Vars, "Vars")
+	gormErr := ds.Store.Conn.First(&h).Related(&h.Vars, "Vars")
 	if gormErr.Error != nil {
-		return h, gormErr.Error
+		return nil, gormErr.Error
 	}
 	return h, nil
 }
@@ -86,17 +83,17 @@ func (ds *DoitServer) GetHostByName(d *Domain, name string) (*Host, error) {
 	h := &Host{Name: name, Domain: d}
 	gormErr := ds.Store.Conn.Where("name = ? and domain_id = ?", name, d.ID).Find(&h).Related(&h.Vars, "Vars")
 	if gormErr.Error != nil {
-		return h, gormErr.Error
+		return nil, gormErr.Error
 	}
 	return h, nil
 }
 
 //GetHostVar Get HostVar from datastore
 func (ds *DoitServer) GetHostVar(d *Domain, id int) (*HostVar, error) {
-	v := &HostVar{ID: id, Domain: d}
-	ds.Store.Conn.Where("id = ? and domain_id = ?", id, d.ID).First(&v)
-	if v.Name != "" {
-		return v, nil
+	v := &HostVar{}
+	gormErr := ds.Store.Conn.Where("id = ? and domain_id = ?", id, d.ID).First(&v)
+	if gormErr.Error != nil {
+		return nil, gormErr.Error
 	}
-	return nil, errors.New("HostVar ID not found")
+	return v, nil
 }

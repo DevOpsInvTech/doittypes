@@ -24,6 +24,16 @@ func TestClientGetVar(t *testing.T) {
 	log.Printf("%#v", v)
 }
 
+func TestClientGetVars(t *testing.T) {
+	dc := &DoitClient{}
+	dc.SetURL("http://localhost:8080/api/1")
+	v, err := dc.GetVars(&Domain{Name: "foo"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Printf("%#v", v)
+}
+
 func TestClientUpdateVar(t *testing.T) {
 	dc := &DoitClient{}
 	dc.SetURL("http://localhost:8080/api/1")
