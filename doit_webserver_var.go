@@ -28,8 +28,7 @@ func (ds *DoitServer) apiVarsHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		retVars, err := ds.GetVarsByDomain(d)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(retVars, w, r)
@@ -66,8 +65,7 @@ func (ds *DoitServer) apiVarHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(v, w, r)
@@ -78,8 +76,7 @@ func (ds *DoitServer) apiVarHandler(w http.ResponseWriter, r *http.Request) {
 		_, err := ds.AddVar(d, reqName, "")
 		if err != nil {
 			//TODO: What error to throw here?
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -87,8 +84,7 @@ func (ds *DoitServer) apiVarHandler(w http.ResponseWriter, r *http.Request) {
 	case "PUT":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.UpdateVar(d, v.ID, "")
@@ -103,8 +99,7 @@ func (ds *DoitServer) apiVarHandler(w http.ResponseWriter, r *http.Request) {
 	case "DELETE":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.RemoveVar(d, v)
@@ -146,8 +141,7 @@ func (ds *DoitServer) apiVarValueHandler(w http.ResponseWriter, r *http.Request)
 	case "GET":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(v, w, r)
@@ -158,8 +152,7 @@ func (ds *DoitServer) apiVarValueHandler(w http.ResponseWriter, r *http.Request)
 		_, err := ds.AddVar(d, reqName, reqValue)
 		if err != nil {
 			//TODO: What error to throw here?
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -167,8 +160,7 @@ func (ds *DoitServer) apiVarValueHandler(w http.ResponseWriter, r *http.Request)
 	case "PUT":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.UpdateVar(d, v.ID, reqValue)
@@ -183,8 +175,7 @@ func (ds *DoitServer) apiVarValueHandler(w http.ResponseWriter, r *http.Request)
 	case "DELETE":
 		v, err := ds.GetVarByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.RemoveVar(d, v)

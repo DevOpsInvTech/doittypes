@@ -32,14 +32,12 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		hv, err := ds.GetHostVarByName(d, h, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(hv, w, r)
@@ -49,15 +47,13 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 	case "POST":
 		h, err := ds.GetHostByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.AddHostVars(d, h.ID, &HostVar{Name: varName, Value: value, Domain: d})
 		if err != nil {
 			//TODO: What error to throw here?
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -75,8 +71,7 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 		err = ds.RemoveHostVars(d, h.ID, &HostVar{Name: varName, Value: value, Domain: d})
 		if err != nil {
 			//TODO: What error to throw here?
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -111,8 +106,7 @@ func (ds *DoitServer) apiHostHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(h, w, r)
@@ -171,8 +165,7 @@ func (ds *DoitServer) apiHostsHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		h, err := ds.GetHostsByDomain(d)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(h, w, r)
@@ -209,14 +202,12 @@ func (ds *DoitServer) apiHostVarsHandler(w http.ResponseWriter, r *http.Request)
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		hv, err := ds.GetHostVars(d, h)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(hv, w, r)

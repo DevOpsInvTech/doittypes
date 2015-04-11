@@ -11,7 +11,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (ds *DoitServer) ReturnNotFound() error {
+func (ds *DoitServer) ReturnNotFound(w http.ResponseWriter, r *http.Request) error {
+	w.WriteHeader(http.StatusNotFound)
+	ds.logger(r, http.StatusNotFound, 0)
 	return nil
 }
 

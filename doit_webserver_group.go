@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -32,8 +31,7 @@ func (ds *DoitServer) apiGroupVarHandler(w http.ResponseWriter, r *http.Request)
 	case "GET":
 		g, err := ds.GetGroupByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(g, w, r)
@@ -43,8 +41,7 @@ func (ds *DoitServer) apiGroupVarHandler(w http.ResponseWriter, r *http.Request)
 	case "POST":
 		_, err := ds.AddGroup(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -56,8 +53,7 @@ func (ds *DoitServer) apiGroupVarHandler(w http.ResponseWriter, r *http.Request)
 	case "DELETE":
 		g, err := ds.GetGroupByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.RemoveGroup(d, g)
@@ -94,8 +90,7 @@ func (ds *DoitServer) apiGroupHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		g, err := ds.GetGroupByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(g, w, r)
@@ -105,8 +100,7 @@ func (ds *DoitServer) apiGroupHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		_, err := ds.AddGroup(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -118,8 +112,7 @@ func (ds *DoitServer) apiGroupHandler(w http.ResponseWriter, r *http.Request) {
 	case "DELETE":
 		g, err := ds.GetGroupByName(d, reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.RemoveGroup(d, g)
@@ -154,8 +147,7 @@ func (ds *DoitServer) apiGroupsHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		g, err := ds.GetGroupsByDomain(d)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(g, w, r)

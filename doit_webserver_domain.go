@@ -22,8 +22,7 @@ func (ds *DoitServer) apiDomainHandler(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		d, err := ds.GetDomainByName(reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(d, w, r)
@@ -33,8 +32,7 @@ func (ds *DoitServer) apiDomainHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		_, err := ds.AddDomain(reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -45,8 +43,7 @@ func (ds *DoitServer) apiDomainHandler(w http.ResponseWriter, r *http.Request) {
 	case "DELETE":
 		d, err := ds.GetDomainByName(reqName)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		err = ds.RemoveDomain(d)
@@ -77,8 +74,7 @@ func (ds *DoitServer) apiDomainsHandler(w http.ResponseWriter, r *http.Request) 
 	case "GET":
 		d, err := ds.GetDomains()
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
+			ds.ReturnNotFound(w, r)
 			return
 		}
 		ds.ReturnJSON(d, w, r)
