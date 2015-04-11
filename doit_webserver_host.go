@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -43,16 +42,10 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(hv)
+		ds.ReturnJSON(hv, w, r)
 		if err != nil {
-			log.Errorln("Unable to marshal json", data)
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
 	case "POST":
 		h, err := ds.GetHostByName(d, reqName)
 		if err != nil {
@@ -88,6 +81,10 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 		}
 		w.WriteHeader(http.StatusOK)
 		ds.logger(r, http.StatusOK, 0)
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }
 
@@ -118,16 +115,10 @@ func (ds *DoitServer) apiHostHandler(w http.ResponseWriter, r *http.Request) {
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(h)
+		ds.ReturnJSON(h, w, r)
 		if err != nil {
-			log.Errorln("Unable to marshal json", data)
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
 	case "POST":
 		_, err := ds.AddHost(d, reqName)
 		if err != nil {
@@ -152,6 +143,10 @@ func (ds *DoitServer) apiHostHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(500)
 		}
 		w.WriteHeader(200)
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }
 
@@ -180,16 +175,14 @@ func (ds *DoitServer) apiHostsHandler(w http.ResponseWriter, r *http.Request) {
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(h)
+		ds.ReturnJSON(h, w, r)
 		if err != nil {
-			log.Errorln("Unable to marshal json", data)
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }
 
@@ -211,7 +204,7 @@ func (ds *DoitServer) apiHostVarsHandler(w http.ResponseWriter, r *http.Request)
 		ds.logger(r, http.StatusBadRequest, 0)
 		return
 	}
-	
+
 	switch r.Method {
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
@@ -226,15 +219,13 @@ func (ds *DoitServer) apiHostVarsHandler(w http.ResponseWriter, r *http.Request)
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(hv)
+		ds.ReturnJSON(hv, w, r)
 		if err != nil {
-			log.Errorln("Unable to marshal json", data)
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }

@@ -11,6 +11,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func (ds *DoitServer) ReturnNotFound() error {
+	return nil
+}
+
+func (ds *DoitServer) ReturnJSON(dStruct interface{}, w http.ResponseWriter, r *http.Request) error {
+	data, err := json.Marshal(dStruct)
+	if err != nil {
+		log.Errorln("Unable to marshal json", data)
+		w.WriteHeader(http.StatusInternalServerError)
+		ds.logger(r, http.StatusInternalServerError, 0)
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+	ds.logger(r, http.StatusOK, len(data))
+	return nil
+}
+
 func (ds *DoitServer) DomainCheck(dName string) (d *Domain, err error) {
 	if len(dName) > 0 {
 		var err error
@@ -37,6 +55,7 @@ func (ds *DoitServer) logger(r *http.Request, status int, retSize int) {
 	log.Infof("%s %s %s [%s] \"%s %s %s\" %d %d", r.RemoteAddr, "-", "-", fmt.Sprintf("%d/%s/%d:%d:%d:%d %s", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute(), t.Second(), zone), r.Method, r.URL.RequestURI(), r.Proto, status, retSize)
 }
 
+//Deprecated
 func (ds *DoitServer) oldApiHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -27,15 +26,10 @@ func (ds *DoitServer) apiDomainHandler(w http.ResponseWriter, r *http.Request) {
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(d)
+		ds.ReturnJSON(d, w, r)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
 	case "POST":
 		_, err := ds.AddDomain(reqName)
 		if err != nil {
@@ -63,6 +57,10 @@ func (ds *DoitServer) apiDomainHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(http.StatusOK)
 		ds.logger(r, http.StatusOK, 0)
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }
 
@@ -83,14 +81,13 @@ func (ds *DoitServer) apiDomainsHandler(w http.ResponseWriter, r *http.Request) 
 			ds.logger(r, http.StatusNotFound, 0)
 			return
 		}
-		data, err := json.Marshal(d)
+		ds.ReturnJSON(d, w, r)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			ds.logger(r, http.StatusInternalServerError, 0)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
-		ds.logger(r, http.StatusOK, len(data))
+	default:
+		w.WriteHeader(http.StatusNotImplemented)
+		ds.logger(r, http.StatusNotImplemented, 0)
+		return
 	}
 }
