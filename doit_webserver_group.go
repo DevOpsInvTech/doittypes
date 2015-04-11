@@ -19,19 +19,15 @@ func (ds *DoitServer) apiGroupVarHandler(w http.ResponseWriter, r *http.Request)
 	vars := mux.Vars(r)
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
-	_ := vars["varName"]
+	varName := vars["varName"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		g, err := ds.GetGroupByName(d, reqName)
@@ -93,17 +89,13 @@ func (ds *DoitServer) apiGroupHandler(w http.ResponseWriter, r *http.Request) {
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		g, err := ds.GetGroupByName(d, reqName)
@@ -163,17 +155,13 @@ func (ds *DoitServer) apiGroupsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	domain := r.Form.Get("domain")
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			ds.logger(r, http.StatusNotFound, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		g, err := ds.GetGroupsByDomain(d)

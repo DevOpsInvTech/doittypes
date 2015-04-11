@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,6 +10,18 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 )
+
+func (ds *DoitServer) DomainCheck(dName string) (d *Domain, err error) {
+	if len(dName) > 0 {
+		var err error
+		d, err = ds.GetDomainByName(dName)
+		if err != nil {
+			return nil, err
+		}
+		return d, nil
+	}
+	return nil, errors.New("Domain string not valid")
+}
 
 func (ds *DoitServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -24,7 +37,7 @@ func (ds *DoitServer) logger(r *http.Request, status int, retSize int) {
 	log.Infof("%s %s %s [%s] \"%s %s %s\" %d %d", r.RemoteAddr, "-", "-", fmt.Sprintf("%d/%s/%d:%d:%d:%d %s", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute(), t.Second(), zone), r.Method, r.URL.RequestURI(), r.Proto, status, retSize)
 }
 
-func (ds *DoitServer) apiHandler(w http.ResponseWriter, r *http.Request) {
+func (ds *DoitServer) oldApiHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Errorln("Unable to parse message", err)

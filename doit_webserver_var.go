@@ -18,16 +18,11 @@ func (ds *DoitServer) apiVarsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	domain := r.Form.Get("domain")
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
 
 	switch r.Method {
@@ -63,16 +58,11 @@ func (ds *DoitServer) apiVarHandler(w http.ResponseWriter, r *http.Request) {
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
 
 	switch r.Method {
@@ -150,16 +140,11 @@ func (ds *DoitServer) apiVarValueHandler(w http.ResponseWriter, r *http.Request)
 	reqValue := vars["value"]
 	reqName := vars["name"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
 
 	switch r.Method {

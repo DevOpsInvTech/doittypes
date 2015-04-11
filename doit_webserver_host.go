@@ -22,17 +22,13 @@ func (ds *DoitServer) apiHostVarHandler(w http.ResponseWriter, r *http.Request) 
 	varName := vars["varName"]
 	value := vars["value"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
@@ -107,17 +103,13 @@ func (ds *DoitServer) apiHostHandler(w http.ResponseWriter, r *http.Request) {
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
@@ -173,17 +165,13 @@ func (ds *DoitServer) apiHostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	domain := r.Form.Get("domain")
 
-	d := &Domain{}
-
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+
 	switch r.Method {
 	case "GET":
 		h, err := ds.GetHostsByDomain(d)
@@ -216,18 +204,14 @@ func (ds *DoitServer) apiHostVarsHandler(w http.ResponseWriter, r *http.Request)
 	vars := mux.Vars(r)
 	domain := r.Form.Get("domain")
 	reqName := vars["name"]
-	
-	d := &Domain{}
 
-	if len(domain) > 0 {
-		var err error
-		d, err = ds.GetDomainByName(domain)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			ds.logger(r, http.StatusBadRequest, 0)
-			return
-		}
+	d, err := ds.DomainCheck(domain)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		ds.logger(r, http.StatusBadRequest, 0)
+		return
 	}
+	
 	switch r.Method {
 	case "GET":
 		h, err := ds.GetHostByName(d, reqName)
