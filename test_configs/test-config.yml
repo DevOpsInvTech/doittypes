@@ -1,7 +1,0 @@
----
-server:
-  enable: True
-  port: 8080
-storage:
-  type: sqlite3
-  location: _test_tmp/database.db
