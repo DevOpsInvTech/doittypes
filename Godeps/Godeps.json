@@ -1,0 +1,19 @@
+{
+	"ImportPath": "github.com/robwc/doit-types",
+	"GoVersion": "go1.4.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "2989e42d4d1e0ffc338dba0106aef2772900e38b"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/hstore",
+			"Comment": "go1.0-cutoff-28-g72d960f",
+			"Rev": "72d960fe96ac86dfd376b0de7ca81c0334838d0b"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Rev": "308067797b0fcce4ca06362580dc6db77c1bfeda"
+		}
+	]
+}
