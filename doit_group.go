@@ -16,24 +16,8 @@ type Group struct {
 	UpdatedAt time.Time     `json:"-"`
 }
 
-type GroupVar struct {
-	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
-	Name      string        `sql:"unique" json:"name"`
-	Value     string        `json:"value"`
-	Domain    *Domain       `json:"-"`
-	DomainID  sql.NullInt64 `json:"-"`
-	Group     *Group        `json:"-"`
-	GroupID   sql.NullInt64 `json:"-"`
-	CreatedAt time.Time     `json:"-"`
-	UpdatedAt time.Time     `json:"-"`
-}
-
 type GroupMatrix struct {
 	ID      int `sql:"not null;unique;AUTO_INCREMENT"`
 	GroupID int
 	Groups  []Group `gorm:"many2many:group_groupmatrixes;"`
-}
-
-func (gm *GroupMatrix) AddGroup(g Group) {
-	gm.Groups = append(gm.Groups, g)
 }

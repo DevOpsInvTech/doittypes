@@ -14,15 +14,3 @@ type Host struct {
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
 }
-
-type HostVar struct {
-	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
-	Name      string        `sql:"unique" json:"name"`
-	Value     string        `json:"value"`
-	Domain    *Domain       `json:"-"`
-	DomainID  sql.NullInt64 `json:"-"`
-	Host      *Host         `json:"-"`
-	HostID    sql.NullInt64 `json:"-"`
-	CreatedAt time.Time     `json:"-"`
-	UpdatedAt time.Time     `json:"-"`
-}
