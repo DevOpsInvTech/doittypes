@@ -22,7 +22,7 @@ type GroupVar struct {
 	Value     string        `json:"value"`
 	Domain    *Domain       `json:"-"`
 	DomainID  sql.NullInt64 `json:"-"`
-	Group     *Host         `json:"-"`
+	Group     *Group        `json:"-"`
 	GroupID   sql.NullInt64 `json:"-"`
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
