@@ -11,6 +11,8 @@ type Host struct {
 	Vars      []*Var        `gorm:"many2many:hostvars_vars;" json:"vars,omitempty"`
 	Domain    *Domain       `json:"domain"`
 	DomainID  sql.NullInt64 `json:"-"`
+	Group     *Group        `json:"-"`
+	GroupID   sql.NullInt64 `json:"-"`
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
 }
