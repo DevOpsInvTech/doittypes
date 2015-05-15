@@ -10,8 +10,8 @@ type Group struct {
 	Name      string        `sql:"unique" json:"name"`
 	Domain    *Domain       `json:"domain"`
 	DomainID  sql.NullInt64 `json:"-"`
-	Hosts     []Host        `gorm:"many2many:group_hosts;" json:"hosts,omitempty"`
-	Vars      []Var         `gorm:"many2many:group_vars;" json:"vars,omitempty"`
+	Hosts     []*Host       `gorm:"many2many:group_hosts;" json:"hosts,omitempty"`
+	Vars      []*Var        `gorm:"many2many:group_vars;" json:"vars,omitempty"`
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
 }
