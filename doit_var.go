@@ -13,7 +13,7 @@ type Var struct {
 	HostID    sql.NullInt64 `json:"-"`
 	Group     *Group        `json:"-"`
 	GroupID   sql.NullInt64 `json:"-"`
-	Name      string        `sql:"unique" json:"name""`
+	Name      string        `json:"name""`
 	Value     string        `json:"value"`
 	CreatedAt time.Time     `json:"-"`
 	UpdatedAt time.Time     `json:"-"`
