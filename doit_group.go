@@ -17,7 +17,7 @@ type Group struct {
 }
 
 type GroupMatrix struct {
-	ID      int `sql:"not null;unique;AUTO_INCREMENT"`
+	ID      int `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
 	GroupID int
 	Groups  []Group `gorm:"many2many:group_groupmatrixes;"`
 }
