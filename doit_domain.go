@@ -1,6 +1,9 @@
 package doittypes
 
-import "time"
+import (
+	"log"
+	"time"
+)
 
 //Domain a container for all related objects under the same namespace
 type Domain struct {
@@ -14,7 +17,7 @@ type Domain struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (d *Domain) MarshalAnsilbe() {
+func (d *Domain) MarshalAnsible(n *AnsibleNode) {
 	//Check every sub struct
 	//Marshal each sub struct
 	//Hosts, Vars, Groups
@@ -25,13 +28,15 @@ func (d *Domain) MarshalAnsilbe() {
 	// value means value for root item
 	// main means this is a top tier item to embed into the json
 	//dJSON := make(map[string]interface{})
+	n := &AnsibleNode{}
 	for i := range d.Hosts {
-		d.Hosts[i].MarshalAnsilbe()
+		d.Hosts[i].MarshalAnsible(n)
 	}
 	for i := range d.Vars {
-		d.Vars[i].MarshalAnsilbe()
+		d.Vars[i].MarshalAnsible(n)
 	}
 	for i := range d.Groups {
-		d.Groups[i].MarshalAnsilbe()
+		d.Groups[i].MarshalAnsible(n)
 	}
+	log.Printf("%#v", n)
 }

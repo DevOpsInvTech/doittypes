@@ -2,7 +2,6 @@ package doittypes
 
 import (
 	"database/sql"
-	"log"
 	"reflect"
 	"time"
 )
@@ -20,17 +19,16 @@ type Group struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (g *Group) MarshalAnsilbe() {
+func (g *Group) MarshalAnsible(n *AnsibleNode) {
 	val := reflect.ValueOf(g).Elem()
 	for i := 0; i < val.NumField(); i = i + 1 {
-		field := reflect.TypeOf(g).Elem().Field(i)
-		log.Println(field.Tag.Get(AnsileTag))
+		AnsibleCheckTag(reflect.TypeOf(g).Elem().Field(i), n, g)
 	}
 	for i := range g.Hosts {
-		g.Hosts[i].MarshalAnsilbe()
+		g.Hosts[i].MarshalAnsible(n)
 	}
 	for i := range g.Vars {
-		g.Vars[i].MarshalAnsilbe()
+		g.Vars[i].MarshalAnsible(n)
 	}
 }
 

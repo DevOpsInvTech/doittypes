@@ -2,7 +2,6 @@ package doittypes
 
 import (
 	"database/sql"
-	"log"
 	"reflect"
 	"time"
 )
@@ -23,10 +22,9 @@ type Var struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (v *Var) MarshalAnsilbe() {
+func (v *Var) MarshalAnsible(n *AnsibleNode) {
 	val := reflect.ValueOf(v).Elem()
 	for i := 0; i < val.NumField(); i = i + 1 {
-		field := reflect.TypeOf(v).Elem().Field(i)
-		log.Println(field.Tag.Get(AnsileTag))
+		AnsibleCheckTag(reflect.TypeOf(v).Elem().Field(i), n, v)
 	}
 }
