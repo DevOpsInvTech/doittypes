@@ -2,30 +2,36 @@ package doittypes
 
 import (
 	"database/sql"
-	"reflect"
+	"fmt"
+	"strings"
 	"time"
 )
 
 //Host a representation of a host entity
 type Host struct {
-	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id" ansible:"-"`
-	Name      string        `json:"name" ansible:"root"`
-	Vars      []*Var        `gorm:"many2many:hostvars_vars;" json:"vars,omitempty" ansible:"vars"`
-	Domain    *Domain       `json:"-" ansible:"-"`
-	DomainID  sql.NullInt64 `json:"-" ansible:"-"`
-	Group     *Group        `json:"-" ansible:"-" ansible:"parent"`
-	GroupID   sql.NullInt64 `json:"-" ansible:"-"`
-	CreatedAt time.Time     `json:"-" ansible:"-"`
-	UpdatedAt time.Time     `json:"-" ansible:"-"`
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Name      string        `json:"name"`
+	Vars      []*Var        `gorm:"many2many:hostvars_vars;" json:"vars,omitempty"`
+	Domain    *Domain       `json:"-"`
+	DomainID  sql.NullInt64 `json:"-"`
+	Group     *Group        `json:"-"`
+	GroupID   sql.NullInt64 `json:"-"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (h *Host) MarshalAnsible(n *AnsibleNode) {
-	val := reflect.ValueOf(h).Elem()
-	for i := 0; i < val.NumField(); i = i + 1 {
-		AnsibleCheckTag(reflect.TypeOf(h).Elem().Field(i), n, h)
+func (h *Host) MarshalAnsible() string {
+	var vStr []string
+	if len(h.Vars) > 0 {
+		for i := range h.Vars {
+			vStr = append(vStr, h.Vars[i].MarshalAnsible())
+		}
+		if len(h.Vars) == 1 {
+			return fmt.Sprintf("\"%s\":{\"vars\":%s}", h.Name, strings.Join(vStr, ","))
+		} else if len(h.Vars) > 1 {
+			return fmt.Sprintf("{\"%s\":{\"vars\":[%s]}}", h.Name, strings.Join(vStr, ","))
+		}
 	}
-	for i := range h.Vars {
-		h.Vars[i].MarshalAnsible(n)
-	}
+	return fmt.Sprintf("\"%s\"", h.Name)
 }

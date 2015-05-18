@@ -2,7 +2,8 @@ package doittypes
 
 import (
 	"database/sql"
-	"reflect"
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -19,17 +20,46 @@ type Group struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (g *Group) MarshalAnsible(n *AnsibleNode) {
-	val := reflect.ValueOf(g).Elem()
-	for i := 0; i < val.NumField(); i = i + 1 {
-		AnsibleCheckTag(reflect.TypeOf(g).Elem().Field(i), n, g)
+func (g *Group) MarshalAnsible() string {
+	//vars
+	var vStrs, hStrs []string
+	if len(g.Hosts) > 0 {
+		for i := range g.Hosts {
+			hStrs = append(hStrs, g.Hosts[i].MarshalAnsible())
+		}
 	}
-	for i := range g.Hosts {
-		g.Hosts[i].MarshalAnsible(n)
+	if len(g.Vars) > 0 {
+		for i := range g.Vars {
+			vStrs = append(vStrs, g.Vars[i].MarshalAnsible())
+		}
 	}
-	for i := range g.Vars {
-		g.Vars[i].MarshalAnsible(n)
+	var a, a1, b, b1 string
+	if len(hStrs) > 0 {
+		a = strings.Join(hStrs, ",")
+		if len(hStrs) == 1 {
+			a1 = fmt.Sprintf("\"hosts\":%s", a)
+		} else if len(vStrs) > 1 {
+			a1 = fmt.Sprintf("\"hosts\":[%s]", a)
+		}
 	}
+	if len(vStrs) > 0 {
+		b = strings.Join(vStrs, ",")
+		if len(vStrs) == 1 {
+			b1 = fmt.Sprintf("\"vars\":%s", b)
+		} else if len(vStrs) > 1 {
+			b1 = fmt.Sprintf("\"vars\":[%s]", b)
+		}
+	}
+	if len(vStrs) > 0 && len(hStrs) > 0 {
+		return fmt.Sprintf("\"%s\":%s", g.Name, strings.Join([]string{a1, b1}, ","))
+	} else if len(vStrs) == 0 && len(hStrs) == 1 {
+		return fmt.Sprintf("\"%s\":%s", g.Name, a1)
+	} else if len(vStrs) == 1 && len(hStrs) == 0 {
+		return fmt.Sprintf("\"%s\":%s", g.Name, b1)
+	} else if len(vStrs) == 0 && len(hStrs) == 0 {
+		return fmt.Sprintf("\"%s\"", g.Name)
+	}
+	return fmt.Sprintf("\"%s\"", g.Name)
 }
 
 type GroupMatrix struct {

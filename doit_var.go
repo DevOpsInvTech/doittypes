@@ -2,7 +2,7 @@ package doittypes
 
 import (
 	"database/sql"
-	"reflect"
+	"fmt"
 	"time"
 )
 
@@ -11,7 +11,7 @@ type Var struct {
 	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id" ansible:"-"`
 	Domain    *Domain       `json:"-" ansible:"-" `
 	DomainID  sql.NullInt64 `json:"-" ansible:"-"`
-	Host      *Host         `json:"-" ansible:"parent"`
+	Host      *Host         `json:"-" ansible:"-"`
 	HostID    sql.NullInt64 `json:"-" ansible:"-"`
 	Group     *Group        `json:"-" ansible:"parent"`
 	GroupID   sql.NullInt64 `json:"-" ansible:"-"`
@@ -22,9 +22,6 @@ type Var struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (v *Var) MarshalAnsible(n *AnsibleNode) {
-	val := reflect.ValueOf(v).Elem()
-	for i := 0; i < val.NumField(); i = i + 1 {
-		AnsibleCheckTag(reflect.TypeOf(v).Elem().Field(i), n, v)
-	}
+func (v *Var) MarshalAnsible() string {
+	return fmt.Sprintf("{\"%s\":\"%s\"}", v.Name, v.Value)
 }
