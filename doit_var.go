@@ -2,26 +2,26 @@ package doittypes
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 )
 
 //Var Variable to add
 type Var struct {
-	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id" ansible:"-"`
-	Domain    *Domain       `json:"-" ansible:"-" `
-	DomainID  sql.NullInt64 `json:"-" ansible:"-"`
-	Host      *Host         `json:"-" ansible:"-"`
-	HostID    sql.NullInt64 `json:"-" ansible:"-"`
-	Group     *Group        `json:"-" ansible:"parent"`
-	GroupID   sql.NullInt64 `json:"-" ansible:"-"`
-	Name      string        `json:"name" ansible:"root"`
-	Value     string        `json:"value" ansible:"value"`
-	CreatedAt time.Time     `json:"-" ansible:"-"`
-	UpdatedAt time.Time     `json:"-" ansible:"-"`
+	ID        int           `sql:"not null;unique;AUTO_INCREMENT" json:"id"`
+	Domain    *Domain       `json:"-" `
+	DomainID  sql.NullInt64 `json:"-"`
+	Host      *Host         `json:"-"`
+	HostID    sql.NullInt64 `json:"-"`
+	Group     *Group        `json:"-"`
+	GroupID   sql.NullInt64 `json:"-"`
+	Name      string        `json:"name"`
+	Value     string        `json:"value"`
+	CreatedAt time.Time     `json:"-"`
+	UpdatedAt time.Time     `json:"-"`
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (v *Var) MarshalAnsible() string {
-	return fmt.Sprintf("{\"%s\":\"%s\"}", v.Name, v.Value)
+func (v *Var) MarshalAnsible() map[string]interface{} {
+	m := map[string]interface{}{v.Name: v.Value}
+	return m
 }

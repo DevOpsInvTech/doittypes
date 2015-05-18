@@ -2,8 +2,6 @@ package doittypes
 
 import (
 	"database/sql"
-	"fmt"
-	"strings"
 	"time"
 )
 
@@ -21,17 +19,13 @@ type Host struct {
 }
 
 //MarshalAnsilbe mashals the struct into an Ansible supported JSON
-func (h *Host) MarshalAnsible() string {
-	var vStr []string
+func (h *Host) MarshalAnsible() map[string]interface{} {
+	var vStr []map[string]interface{}
 	if len(h.Vars) > 0 {
 		for i := range h.Vars {
 			vStr = append(vStr, h.Vars[i].MarshalAnsible())
 		}
-		if len(h.Vars) == 1 {
-			return fmt.Sprintf("\"%s\":{\"vars\":%s}", h.Name, strings.Join(vStr, ","))
-		} else if len(h.Vars) > 1 {
-			return fmt.Sprintf("{\"%s\":{\"vars\":[%s]}}", h.Name, strings.Join(vStr, ","))
-		}
+		return map[string]interface{}{h.Name: map[string]interface{}{"vars": vStr}}
 	}
-	return fmt.Sprintf("\"%s\"", h.Name)
+	return map[string]interface{}{h.Name: ""}
 }
