@@ -48,8 +48,7 @@ func (g *Group) MarshalAnsible() map[string]interface{} {
 		fmt.Println(1, 0)
 		return map[string]interface{}{g.Name: hm}
 	}
-	fmt.Println(0, 0)
-	return map[string]interface{}{"": ""}
+	return map[string]interface{}{g.Name: ""}
 }
 
 type GroupMatrix struct {
