@@ -28,14 +28,14 @@ func (g *Group) MarshalAnsible() map[string]interface{} {
 		for i := range g.Hosts {
 			hStrs = append(hStrs, g.Hosts[i].MarshalAnsible())
 		}
-		hm = map[string]interface{}{g.Name: map[string]interface{}{"hosts": hStrs}}
+		hm = map[string]interface{}{"hosts": hStrs}
 	}
 
 	if len(g.Vars) > 0 {
 		for i := range g.Vars {
 			vStrs = append(vStrs, g.Vars[i].MarshalAnsible())
 		}
-		vm = map[string]interface{}{g.Name: map[string]interface{}{"vars": vStrs}}
+		vm = map[string]interface{}{"vars": vStrs}
 	}
 
 	if len(g.Hosts) > 0 && len(g.Vars) > 0 {
